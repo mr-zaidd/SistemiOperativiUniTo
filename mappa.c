@@ -12,6 +12,11 @@
 #define WIDTH 60
 #define HEIGHT 20
 
+typedef struct cella{
+
+    int occupata;
+
+}cella
 
 int main(){
 
@@ -26,23 +31,28 @@ int main(){
 
     arr = (int*) shmat(shmid, NULL, 0);
     int i = 0;
+    int j = 0;
 
     for(i; i < sizeMatrix; i++){
         arr[i] = i;
-        printf("\n%d\n", i);
+        //printf("\n%d\n", i);
     }
 
     if(fork() == 0){
 
         int shmidChild = shmget(mykey, sizeMem, IPC_CREAT);
         int* arrChild = shmat(shmidChild, 0, SHM_RDONLY);
-        for(int i = 0; i < HEIGHT; i++){
-            for(int j = 0; j < WIDTH; j++){
 
-                printf("%d--", arrChild[j*20+i]);
-
+        for(i = 0; i < HEIGHT*WIDTH; i++){
+            if(j == WIDTH){
+                j = 0;
+                j++;
+                printf("%d  ", arrChild[i]);
+                printf("\n\n");
+            }else{
+                 j++;
+                 printf("%d  ", arrChild[i]);
             }
-            printf("\n\n");
         }
 
         shmdt((int*)shmidChild);
