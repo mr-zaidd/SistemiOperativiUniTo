@@ -11,59 +11,71 @@
 
 #define WIDTH 60
 #define HEIGHT 20
+#define HOLES 50
+
+int shmCreate(int, int);
 
 typedef struct cella{
 
     int occupata;
 
-}cella
+}cella;
+
+int shmCreate(int mykey, int sizeMem){
+
+    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
+    return shmid;
+
+}
 
 int main(){
 
 
-    int* arr;
+    cella* arr;
 
     int mykey = ftok(".", 'x');
-    int sizeMem = WIDTH*HEIGHT*sizeof(int);
+    int sizeMem = WIDTH*HEIGHT*sizeof(arr);
     int sizeMatrix = HEIGHT*WIDTH;
 
-    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
-
-    arr = (int*) shmat(shmid, NULL, 0);
+    int shmid = shmCreate(mykey,sizeMem);
+    arr = (cella*)shmat(shmid, NULL, 0);
     int i = 0;
     int j = 0;
 
     for(i; i < sizeMatrix; i++){
-        arr[i] = i;
-        //printf("\n%d\n", i);
+        cella c;
+        c.occupata = 1;
+        arr[i] = c;
     }
 
     if(fork() == 0){
 
         int shmidChild = shmget(mykey, sizeMem, IPC_CREAT);
-        int* arrChild = shmat(shmidChild, 0, SHM_RDONLY);
+        cella* arrChild = (cella*)shmat(shmidChild, 0, SHM_RDONLY);
 
         for(i = 0; i < HEIGHT*WIDTH; i++){
             if(j == WIDTH){
+                printf("%d  ", arrChild[i].occupata);
+                printf("\n\n");
+                printf("\n\n%d\n\n", j);
                 j = 0;
                 j++;
-                printf("%d  ", arrChild[i]);
-                printf("\n\n");
             }else{
                  j++;
-                 printf("%d  ", arrChild[i]);
+                 printf("%d  ", arrChild[i].occupata);
             }
         }
 
-        shmdt((int*)shmidChild);
+        shmdt(arrChild);
     }
 
     wait(NULL);
 
-    shmdt((int*)shmid);
+    shmdt(arr);
 
     shmctl(shmid, IPC_RMID, 0);
 
+    printf("\n\n");
 
     return 0;
 
