@@ -37,7 +37,7 @@ int shmCreate(int mykey, int sizeMem){
 int insertHoles(cella* arr){
 
     srand(time(0));
-    int idx = rand()%(WIDTH*HEIGHT);
+    int idx = rand()%(WIDTH * HEIGHT);
 
     int i = idx/WIDTH;
     int j = idx-(i*WIDTH);
@@ -62,7 +62,7 @@ int insertHoles(cella* arr){
 
         }
     }
-
+ return 0;
 }
 
 
@@ -81,36 +81,33 @@ int main(){
     int j;
     int count = HOLES;
 
+
+    cella c;
+    c.occupata = 0;
+
     for(i; i < sizeMatrix; i++){
-        cella c;
-        c.occupata = 0;
         arr[i] = c;
     }
 
-
     int b = 0;
     for(int a = 0; a < HEIGHT*WIDTH; a++){
-        if(b == WIDTH){
-            printf("%d  ", arr[a].occupata);
+        printf("%c  ", arr[a].occupata ? 'X' : '.');
+        if(b == WIDTH-1){
             printf("\n\n");
             b = 0;
+        }else
             b++;
-        }else{
-            b++;
-            printf("%d  ", arr[a].occupata);
-        }
     }
 
 
     printf("\n\n\n");
 
     while(count > 0){
-    
-        int tmp = insertHoles(arr);
         //printf("\n%d\n", tmp);
-        if( tmp )
+        if(insertHoles(arr)){
             count--;
-
+            printf("\n%d\n", count);
+        }
     }
 
     if(fork() == 0){
@@ -118,16 +115,13 @@ int main(){
         int shmidChild = shmget(mykey, sizeMem, IPC_CREAT);
         cella* arrChild = (cella*)shmat(shmidChild, 0, SHM_RDONLY);
         int j = 0;
-        for(i = 0; i < HEIGHT*WIDTH; i++){
-            if(j == WIDTH){
-                printf("%d  ", arrChild[i].occupata);
+        for(int i = 0; i < HEIGHT*WIDTH; i++){
+            printf("%c  ", arr[i].occupata ? 'X' : '.');
+            if(j == WIDTH-1){
                 printf("\n\n");
                 j = 0;
+            }else
                 j++;
-            }else{
-                 j++;
-                 printf("%d  ", arrChild[i].occupata);
-            }
         }
 
         shmdt(arrChild);
