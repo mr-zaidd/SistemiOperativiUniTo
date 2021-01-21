@@ -43,7 +43,7 @@ int insertHoles(cella* arr){
     int j = idx-(i*WIDTH);
 
     if( (arr[idx].occupata == 1) || (i==0) || (j==0) || (i==(HEIGHT-1)) || (j==(WIDTH-1)) )
-        return 1;
+        return 0;
     else{
 
         int aD = (i-1)*WIDTH+(j-1);
@@ -58,7 +58,7 @@ int insertHoles(cella* arr){
         if( (arr[aD].occupata == 0) && (arr[aC].occupata == 0) && (arr[aS].occupata == 0) && (arr[cD].occupata == 0) && (arr[cS].occupata == 0) && (arr[bD].occupata == 0)  && (arr[bC].occupata == 0) && (arr[bS].occupata == 0) ){
 
             arr[idx].occupata = 1;
-            return 0;
+            return 1;
 
         }
     }
@@ -87,11 +87,28 @@ int main(){
         arr[i] = c;
     }
 
+
+    int b = 0;
+    for(int a = 0; a < HEIGHT*WIDTH; a++){
+        if(b == WIDTH){
+            printf("%d  ", arr[a].occupata);
+            printf("\n\n");
+            b = 0;
+            b++;
+        }else{
+            b++;
+            printf("%d  ", arr[a].occupata);
+        }
+    }
+
+
+    printf("\n\n\n");
+
     while(count > 0){
     
         int tmp = insertHoles(arr);
-        printf("\n%d\n", tmp);
-        if( tmp == 0 )
+        //printf("\n%d\n", tmp);
+        if( tmp )
             count--;
 
     }
