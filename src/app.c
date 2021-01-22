@@ -9,6 +9,8 @@ int main(){
     int tmp;
 
     tmp = mainMappa(mykey);
+    /* creazione taxi && creazione richieste  */
+
     shmid = shmget(mykey, 0, IPC_CREAT);
     shmctl(shmid, IPC_RMID, 0);
 
