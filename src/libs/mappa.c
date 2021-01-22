@@ -5,18 +5,6 @@
 #define HEIGHT 20
 #define HOLES 50
 
-/*
-typedef struct cella{
-
-    int occupata;
-
-}cella;
-
- Prototipi
-int shmCreate(int, int);
-
- Codice */
-
 int shmCreate(int mykey, int sizeMem){
 
     int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
