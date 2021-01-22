@@ -8,13 +8,11 @@ int main(){
     int shmid;
     cella* tmp;
 
-    shmid = shmget(mykey, 0, IPC_CREAT);
     mainMappa(mykey);
-    /* creazione taxi && creazione richieste  */
 
-    tmp = shmat(shmid);
+    /* creazione taxi && creazione richieste */
 
-    shmdt(
+    shmid = shmget(mykey, 0, IPC_CREAT);
     shmctl(shmid, IPC_RMID, 0);
 
 
