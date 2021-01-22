@@ -60,7 +60,7 @@ int insertHoles(cella* arr){
 }
 
 
-int mainMappa(int mykey){
+void mainMappa(int mykey){
 
     cella* arr;
 
@@ -83,6 +83,20 @@ int mainMappa(int mykey){
         arr[i] = c;
     }
 
+    printf("\n\n\nCreazione MAPPA =>\n\n");
+
+    printf("\n\nStiamo posizionando gli HOLES...");
+    printf("\n\n\n");
+    fflush(stdout);
+
+    while(count > 0){
+        if(insertHoles(arr)){
+            count--;
+            printf("\rETA: %2ds", count);
+            fflush(stdout);
+        }
+    }
+
     printf("\n\nMAPPA:\n\n");
 
     for(a = 0; a < HEIGHT*WIDTH; a++){
@@ -95,17 +109,7 @@ int mainMappa(int mykey){
     }
 
 
-    printf("\n\nStiamo posizionando gli HOLES...");
-    printf("\n\n\n");
-    fflush(stdout);
-
-    while(count > 0){
-        if(insertHoles(arr)){
-            count--;
-        }
-    }
-
-    if(fork() == 0){
+  /*  if(fork() == 0){
 
         int shmidChild = shmget(mykey, sizeMem, IPC_CREAT);
         int i;
@@ -124,13 +128,11 @@ int mainMappa(int mykey){
 
         shmdt(arrChild);
     }
-
+*/
     wait(NULL);
 
     shmdt(arr);
 
     printf("\n\n");
-
-    return 0;
 
 }

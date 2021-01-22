@@ -5,12 +5,19 @@ typedef struct cella{
 
     int occupata;
 
+    int attNSec;
+    int capacity;
+
+    int count;
+    void* taxi;
+    void* richieste;
+
 }cella;
 
 int shmCreate(int, int);
 
 int insertHoles(cella*);
 
-int mainMappa(int);
+void mainMappa(int);
 
 #endif
