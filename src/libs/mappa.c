@@ -5,14 +5,6 @@
 #define HEIGHT 20
 #define HOLES 50
 
-int shmCreate(int mykey, int sizeMem){
-
-    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
-    return shmid;
-
-}
-
-
 int insertHoles(cella* arr){
 
 
@@ -67,12 +59,15 @@ void mainMappa(int mykey){
     int sizeMem = WIDTH*HEIGHT*sizeof(arr);
     int sizeMatrix = HEIGHT*WIDTH;
 
-    int shmid = shmCreate(mykey,sizeMem);
+    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
     int i;
     int count;
     int b = 0;
     cella c;
     int a;
+
+    if(shmid == -1)
+        printf("SHMGET NON HA FUNZIONATO");
 
 
     arr = (cella*)shmat(shmid, NULL, 0);
@@ -134,5 +129,20 @@ void mainMappa(int mykey){
     shmdt(arr);
 
     printf("\n\n");
+
+}
+
+int main(){
+
+
+    int mykey = ftok(".", 'X');
+    int shmid;
+
+    mainMappa(mykey);
+
+    shmid = shmget(mykey, 0, IPC_CREAT | 0666);
+    shmctl(shmid, IPC_RMID, 0);
+
+    return 0;
 
 }

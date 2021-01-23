@@ -12,7 +12,7 @@ int main(){
 
     /* creazione taxi && creazione richieste */
 
-    shmid = shmget(mykey, 0, IPC_CREAT);
+    shmid = shmget(mykey, 0, (void*)0);
     shmctl(shmid, IPC_RMID, 0);
 
 

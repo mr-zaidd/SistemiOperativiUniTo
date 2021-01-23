@@ -14,8 +14,6 @@ typedef struct cella{
 
 }cella;
 
-int shmCreate(int, int);
-
 int insertHoles(cella*);
 
 void mainMappa(int);
