@@ -6,13 +6,12 @@ int main(){
 
     int mykey = ftok(".",'X');
     int shmid;
-    cella* tmp;
 
     mainMappa(mykey);
 
     /* creazione taxi && creazione richieste */
 
-    shmid = shmget(mykey, 0, (void*)0);
+    shmid = shmget(mykey, 0, IPC_CREAT | 0666);
     shmctl(shmid, IPC_RMID, 0);
 
 

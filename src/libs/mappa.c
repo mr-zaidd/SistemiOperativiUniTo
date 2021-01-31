@@ -56,15 +56,17 @@ void mainMappa(int mykey){
 
     cella* arr;
 
-    int sizeMem = WIDTH*HEIGHT*sizeof(arr);
     int sizeMatrix = HEIGHT*WIDTH;
 
-    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
     int i;
     int count;
     int b = 0;
     cella c;
     int a;
+
+    int sizeMem = WIDTH*HEIGHT*sizeof(cella);
+
+    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
 
     if(shmid == -1)
         printf("SHMGET NON HA FUNZIONATO");
@@ -74,7 +76,7 @@ void mainMappa(int mykey){
     i = 0;
     count = HOLES;
     c.occupata = 0;
-    for(i; i < sizeMatrix; i++){
+    for(; i < sizeMatrix; i++){
         arr[i] = c;
     }
 
@@ -131,7 +133,7 @@ void mainMappa(int mykey){
     printf("\n\n");
 
 }
-
+/*
 int main(){
 
 
@@ -145,4 +147,4 @@ int main(){
 
     return 0;
 
-}
+}*/
