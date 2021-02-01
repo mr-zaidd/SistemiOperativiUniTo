@@ -15,6 +15,7 @@
 #if (!defined(W) && !defined(H)) || (!defined(W) || !defined(H))
     #error "W e H NON SONO STATE DEFINITE! (-D W60 -D H20)"
 #endif
+
 typedef struct cella{
 
     int occupata;
@@ -38,5 +39,14 @@ typedef struct conf{
     int dur;
 
 }conf;
+
+/* PARSEH */
+void parse(conf*, char*);
+void printConf(conf* sConf);
+
+/* MAPPAH */
+int insertHoles(cella*);
+void mainMappa(int);
+
 
 #endif

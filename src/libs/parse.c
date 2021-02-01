@@ -4,13 +4,15 @@
 void parse(conf* sConf, char* path){
 
     FILE* fp = fopen(path, "r");
+    char line[1024];
+    int conf[9] = {0};
+    int j = 0;
+
+
     if(fp == NULL){
         perror("\n\nFile di Configurazione non trovato\n\n");
         exit(1);
     }
-    char line[1024];
-    int conf[9] = {0};
-    int j = 0;
 
     while(fgets(line, sizeof(line), fp)){
 
@@ -61,6 +63,24 @@ void parse(conf* sConf, char* path){
     }
 }
 
+
+void printConf(conf* sConf){
+
+    printf(
+            "\n\nTAXI: %d\nSOURCE: %d\nHOLES: %d\nCAPACITA': %d\nATTRAVERSAMENTO CELLA: %d\nTIMEOUT: %d\nDARATION: %d\n\n",
+            sConf -> nTaxi,
+            sConf -> nSource,
+            sConf -> holes,
+            sConf -> cap,
+            sConf -> attCell,
+            sConf -> tOut,
+            sConf -> dur
+          );
+
+}
+
+
+/*
 int main(){
 
 
@@ -87,4 +107,4 @@ int main(){
 
     return 0;
 
-}
+}*/

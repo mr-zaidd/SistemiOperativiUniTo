@@ -22,8 +22,11 @@ compile: app
 
 # INIZIO COMPILAZIONE
 
-compilazioneMappa: src/libs/mappa.c src/include/mappa.h
+compilazioneParse: src/libs/parse.c src/include/inc.h
+	$(CC) $(CFLAGS) -c src/libs/parse.c -o build/parse.o
+
+compilazioneMappa: src/libs/mappa.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/mappa.c -o build/mappa.o
 
-app: src/app.c compilazioneMappa
+app: src/app.c compilazioneParse compilazioneMappa
 	$(CC) $(CFLAGS) src/app.c build/mappa.o -o bin/app
