@@ -26,11 +26,14 @@ compile: app
 
 # INIZIO COMPILAZIONE
 
+compilazioneSigLib: src/libs/sigLib.c src/include/inc.h
+	$(CC) $(CFLAGS) -c src/libs/sigLib.c -o build/sigLib.o
+
 compilazioneParse: src/libs/parse.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/parse.c -o build/parse.o
 
 compilazioneMappa: src/libs/mappa.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/mappa.c -o build/mappa.o
 
-app: src/app.c compilazioneParse compilazioneMappa
-	$(CC) $(CFLAGS) src/app.c build/mappa.o build/parse.o -o bin/app
+app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib
+	$(CC) $(CFLAGS) src/app.c build/mappa.o build/parse.o build/sigLib.o -o bin/app

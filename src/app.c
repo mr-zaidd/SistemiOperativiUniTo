@@ -1,6 +1,7 @@
 #include "./include/inc.h"
 #include "./include/mappa.h"
 #include "./include/parse.h"
+#include "./include/sigLib.h"
 
 int main(){
 
