@@ -1,6 +1,22 @@
 #include "../include/inc.h"
+#include "../include/mappa.h"
 
-#define HOLES 50
+void printMX(cella* arr, int size, int enter){
+
+    int count = 0;
+    int capo = 0;
+
+    for(; count < size; count++){
+
+        printf("%c  ", arr[count].occupata ? 'X' : '.');
+        if(capo == (enter-1)){
+            printf("\n\n");
+            capo = 0;
+        }else
+            capo++;
+
+    }
+}
 
 int insertHoles(cella* arr){
 
@@ -49,38 +65,38 @@ int insertHoles(cella* arr){
 }
 
 
-void mainMappa(int mykey){
+void createMappa(int myKey, int holes){
 
     cella* arr;
 
-    int sizeMatrix = H * W;
+    int sizeMem;
+    int sizeMatx;
 
+    int shmid;
     int i;
     int count;
-    int b = 0;
     cella c;
-    int a;
 
-    int sizeMem = W * H * sizeof(cella);
-
-    int shmid = shmget(mykey, sizeMem, IPC_CREAT | 0666);
+    sizeMem = W * H * sizeof(cella);
+    sizeMatx = W * H;
+    shmid = shmget(myKey, sizeMem, IPC_CREAT | 0666);
 
     if(shmid == -1)
         printf("SHMGET NON HA FUNZIONATO");
 
-
     arr = (cella*)shmat(shmid, NULL, 0);
     i = 0;
-    count = HOLES;
+    count = holes;
     c.occupata = 0;
-    for(; i < sizeMatrix; i++){
+
+    for(; i < sizeMatx; i++){
         arr[i] = c;
     }
 
     printf("\n\n\nCreazione MAPPA =>\n\n");
-
     printf("\n\nStiamo posizionando gli HOLES...");
     printf("\n\n\n");
+
     fflush(stdout);
 
     while(count > 0){
@@ -92,56 +108,11 @@ void mainMappa(int mykey){
     }
 
     printf("\n\nMAPPA:\n\n");
-
-    for(a = 0; a < H * W; a++){
-        printf("%c  ", arr[a].occupata ? 'X' : '.');
-        if(b == W - 1){
-            printf("\n\n");
-            b = 0;
-        }else
-            b++;
-    }
-
-
-  /*  if(fork() == 0){
-
-        int shmidChild = shmget(mykey, sizeMem, IPC_CREAT);
-        int i;
-        int j;
-        cella* arrChild = (cella*)shmat(shmidChild, 0, SHM_RDONLY);
-        j = 0;
-        printf("\n\nMAPPA CON HOLES:\n\n");
-        for(i = 0; i < HEIGHT*WIDTH; i++){
-            printf("%c  ", arr[i].occupata ? 'X' : '.');
-            if(j == WIDTH-1){
-                printf("\n\n");
-                j = 0;
-            }else
-                j++;
-        }
-
-        shmdt(arrChild);
-    }
-*/
-    wait(NULL);
+    printMX(arr, sizeMatx, W);
 
     shmdt(arr);
 
     printf("\n\n");
 
 }
-/*
-int main(){
 
-
-    int mykey = ftok(".", 'X');
-    int shmid;
-
-    mainMappa(mykey);
-
-    shmid = shmget(mykey, 0, IPC_CREAT | 0666);
-    shmctl(shmid, IPC_RMID, 0);
-
-    return 0;
-
-}*/

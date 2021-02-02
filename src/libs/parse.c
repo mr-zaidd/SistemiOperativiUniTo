@@ -1,4 +1,5 @@
 #include "../include/inc.h"
+#include "../include/parse.h"
 
 
 void parse(conf* sConf, char* path){

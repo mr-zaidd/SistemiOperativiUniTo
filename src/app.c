@@ -1,17 +1,27 @@
 #include "./include/inc.h"
-
+#include "./include/mappa.h"
+#include "./include/parse.h"
 
 int main(){
 
-    int mykey = ftok(".",'X');
     int shmid;
+    int myKey = ftok(".",'X');
+    FILE* fp;
+    char buff[16];
     conf* sConf = (conf*) malloc(sizeof(conf));
-    char* path = "../conf.cs";
+    char* pathConf = "../conf.csv";
+    char* pathKey = "./tmp/key";
+
+    /* CREAZIONE FILE KEY E SALVATAGGIO */
+    sprintf(buff, "%d", myKey);
+    fp = fopen(pathKey, "w");
+    fprintf(fp, buff);
+    fclose(fp);
 
     /* CREAZIONE E VERIFICA PARAMETRI E MAPPA */
-    parse(sConf, path);
+    parse(sConf, pathConf);
     printConf(sConf);
-    mainMappa(mykey);
+    createMappa(myKey, sConf->holes);
 
     /* CREAZIONE FIGLI TAXI E FIGLI RICHIESTE */
 
@@ -19,7 +29,7 @@ int main(){
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     free(sConf);
-    shmid = shmget(mykey, 0, IPC_CREAT | 0666);
+    shmid = shmget(myKey, 0, IPC_CREAT | 0666);
     shmctl(shmid, IPC_RMID, 0);
 
 
