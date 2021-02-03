@@ -18,9 +18,9 @@ rmFolder:
 	rm -rf $(BIN)
 
 clean:
-	rm -rf $(TMP)*
-	rm -rf $(BUILD)*
 	rm -rf $(BIN)*
+	mkdir -p $(TMP)
+	rm -rf $(BUILD)*
 
 compile: app
 

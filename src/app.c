@@ -6,12 +6,17 @@
 int main(){
 
     int shmid;
+    struct sigaction sa;
     int myKey = ftok(".",'X');
     FILE* fp;
     char buff[16];
     conf* sConf = (conf*) malloc(sizeof(conf));
     char* pathConf = "../conf.csv";
     char* pathKey = "./tmp/key";
+
+    bzero(&sa, sizeof(sa));
+    sa.sa_sigaction = sigHandlerDefault;
+    sigaction(SIGINT, &sa, NULL);
 
     /* CREAZIONE FILE KEY E SALVATAGGIO */
     sprintf(buff, "%d", myKey);
@@ -26,7 +31,7 @@ int main(){
 
     /* CREAZIONE FIGLI TAXI E FIGLI RICHIESTE */
 
-
+    raise(SIGINT);
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     free(sConf);

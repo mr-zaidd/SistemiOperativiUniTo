@@ -1,14 +1,16 @@
 #include "../include/inc.h"
-#include "../include/sigLib.h"
 
 void sigHandlerDefault(int signum){
 
     FILE* fp;
-    int shmid;
     char buff[32];
     int myKey;
+    int shmid;
 
-    fp = fopen("../../tmp/key", "r");
+    printf("\n\nSEGNALE: %d\n\n", signum);
+    fp = fopen("./tmp/key", "r");
+    if(fp == NULL)
+        printf("\n\nE' SBAGLIATO IL PATH DELLA KEY IN SIGLIB\n\n");
     fgets(buff, 32, fp);
     myKey = atoi(buff);
 
