@@ -52,5 +52,5 @@ Mkfile.old
 dkms.conf
 
 # Project's Dirs
-bin/
-build/
+./bin/
+./build/
