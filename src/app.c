@@ -14,9 +14,11 @@ int main(){
     char* pathConf = "../conf.csv";
     char* pathKey = "./tmp/key";
 
+    /* IMPOSTAZIONE SIGNAL HANDLER */
     bzero(&sa, sizeof(sa));
-    sa.sa_sigaction = sigHandlerDefault;
+    sa.sa_handler = sigHandlerDefault;
     sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 
     /* CREAZIONE FILE KEY E SALVATAGGIO */
     sprintf(buff, "%d", myKey);
@@ -31,7 +33,7 @@ int main(){
 
     /* CREAZIONE FIGLI TAXI E FIGLI RICHIESTE */
 
-    raise(SIGINT);
+
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     free(sConf);

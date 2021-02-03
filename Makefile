@@ -24,6 +24,9 @@ clean:
 
 compile: app
 
+run: compile
+	./$(BIN)app
+
 # INIZIO COMPILAZIONE
 
 compilazioneSigLib: src/libs/sigLib.c src/include/inc.h
