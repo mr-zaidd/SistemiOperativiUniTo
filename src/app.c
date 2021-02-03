@@ -31,7 +31,11 @@ int main(){
     printConf(sConf);
     createMappa(myKey, sConf->holes);
 
-    /* CREAZIONE FIGLI TAXI E FIGLI RICHIESTE */
+    /* CREAZIONE FIGLI TAXI E FIGLI RICHIESTE 
+     *
+     * DA IMPLEMENTARE!
+     *
+     */
 
 
 
