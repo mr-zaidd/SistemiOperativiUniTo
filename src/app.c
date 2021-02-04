@@ -10,6 +10,8 @@ void deallocazione(int mykey, conf* sConf){
 
     int shmid = shmget(mykey, 0, IPC_CREAT | 0666);
     int msgid = msgget(mykey, IPC_CREAT | 0666);
+    printf("\n\nSto deallocando tutto\n\n");
+    fflush(stdout);
     shmctl(shmid, IPC_RMID, 0);
     msgctl(msgid, IPC_RMID, NULL);
     free(sConf);
@@ -37,6 +39,7 @@ int main(){
     sigaction(SIGINT, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGALRM, &sa, NULL);
+    sigaction(SIGCHLD, &sa, NULL);
 
     /* CREAZIONE FILE KEY E SALVATAGGIO */
     sprintf(buff, "%d", myKey);
@@ -63,8 +66,6 @@ int main(){
     }else if( figli[1] == 0 )
         execvp(args[0], args);
 
-    sleep(1);
-
     printf("\n\nAlarm Settato\n\n");
     alarm(sConf->dur);
 
@@ -74,10 +75,7 @@ int main(){
     /* ATTESA MORTE DI MASTER TAXI E MASTER RICHIESTE */
     /* DA IMPLEMENTARE */
 
-    waitpid(WAIT_ANY, NULL, 0);
-
-    printf("\n\nWAITPID finito faccio il raise di un SIGTERM\n\n");
-    raise(SIGTERM);
+    waitpid(figli[1], NULL, 0);
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     deallocazione(myKey, sConf);

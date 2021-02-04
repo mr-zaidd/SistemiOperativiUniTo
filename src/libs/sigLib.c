@@ -11,11 +11,10 @@ void sigHandlerDefault(int signum){
 
     switch(signum){
 
-        case SIGALRM:
-            printf("\n\nAlarm ricevuto ad APP\n\n");
-            kill(0, SIGTERM);
+        case SIGCHLD:
+            printf("\n\nSono entrato nel SIGCHILD\n\n");
             break;
-        default: 
+        case SIGINT:
             printf("\n\nRICEVUTO SEGNALE: %s\n\n", strsignal(signum));
             fflush(stdout);
             fp = fopen("./tmp/key", "r");
@@ -28,5 +27,25 @@ void sigHandlerDefault(int signum){
             shmctl(shmid, IPC_RMID, 0);
 
             exit(EXIT_FAILURE);
-    }
+        case SIGTERM:
+            printf("\n\nSONO ENTRATO NEL TERM\n\n");
+            printf("\n\nRICEVUTO SEGNALE: %s\n\n", strsignal(signum));
+            fflush(stdout);
+            fp = fopen("./tmp/key", "r");
+            if(fp == NULL)
+                printf("\n\nE' SBAGLIATO IL PATH DELLA KEY IN SIGLIB\n\n");
+            fgets(buff, 32, fp);
+            myKey = atoi(buff);
+
+            shmid = shmget(myKey, 0, IPC_CREAT | 0666);
+            shmctl(shmid, IPC_RMID, 0);
+
+            exit(EXIT_FAILURE);
+       case SIGALRM:
+            printf("\n\nAlarm ricevuto ad APP\n\n");
+            kill(0, SIGTERM);
+            break;
+        default:
+            break;
+   }
 }

@@ -14,7 +14,7 @@ void sigHandlerRich(int signum){
         case SIGTERM:
             printf("\n\nSIGTERM Arrivato a MASTER RICHIESTE\n\n");
             fflush(stdout);
-            kill(0, SIGKILL);
+            kill(0, SIGTERM);
             exit(0);
         default:
             kill(0, SIGTERM);
