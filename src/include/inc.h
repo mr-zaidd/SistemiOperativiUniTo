@@ -12,10 +12,12 @@
     #include <stdlib.h>
     #include <sys/ipc.h>
     #include <sys/shm.h>
+    #include <sys/msg.h>
     #include <sys/wait.h>
     #include <time.h>
     #include <ctype.h>
     #include <signal.h>
+    #include <errno.h>
 
     #if (!defined(W) && !defined(H)) || (!defined(W) || !defined(H))
             #error "W e H NON SONO STATE DEFINITE! (-D W60 -D H20)"

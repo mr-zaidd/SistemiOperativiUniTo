@@ -24,10 +24,10 @@ clean:
 
 compile: app
 
-run: compile
-	./$(BIN)app
-
 # INIZIO COMPILAZIONE
+
+compilazioneMasterRichieste: src/exec/mRichieste.c
+	$(CC) $(CFLAGS) src/exec/mRichieste.c -o bin/mRichieste
 
 compilazioneSigLib: src/libs/sigLib.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/sigLib.c -o build/sigLib.o
@@ -38,5 +38,5 @@ compilazioneParse: src/libs/parse.c src/include/inc.h
 compilazioneMappa: src/libs/mappa.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/mappa.c -o build/mappa.o
 
-app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib
+app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib compilazioneMasterRichieste
 	$(CC) $(CFLAGS) src/app.c build/mappa.o build/parse.o build/sigLib.o -o bin/app

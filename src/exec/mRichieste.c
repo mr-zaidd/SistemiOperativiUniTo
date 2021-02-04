@@ -25,15 +25,16 @@ void sigHandlerRich(int signum){
 /* CREA RICHIESTA */
 void createRichiesta(int j, pid_t* richild, int nSource){
 
+    char* args[] = {NULL};
     if( (richild[j] = fork()) == -1 ){
 
-        perror("\n\nErrore nella generazione di un processo richiesta. ERRNO = '%s'\n\n", strerror(errno));
-        killAllRichiesta(richild, nSource);
+        printf("\n\nErrore nella generazione di un processo richiesta. ERRNO = '%s'\n\n", strerror(errno));
+        killAllRichieste(richild, nSource);
         exit(EXIT_FAILURE);
 
     }else if( richild[j] == 0 ){
 
-        execvp("./richiesta", NULL);
+        execvp("./richiesta", args);
 
     }
 
@@ -46,6 +47,7 @@ void killAllRichieste(pid_t* richild, int nSource){
 
     for(; i < nSource; i++)
         kill(richild[i], SIGKILL);
+    free(richild);
     exit(0);
 
 }
@@ -55,12 +57,21 @@ void killAllRichieste(pid_t* richild, int nSource){
 int main(int argc, char* argv[]){
 
     int nSource = atoi(argv[1]);
-    pid_t richild[nSource] = {0}
+    /*pid_t richild[nSource] = {0};*/
+    pid_t* richild = (pid_t*) malloc(nSource*sizeof(pid_t));
     pid_t killedChild;
     int nbChild = 0;
     int i = 0;
     int j = 0;
     struct sigaction sa;
+    char* args[] = {NULL};
+
+    if(argc < 2){
+
+        printf("Errore nel passare le variabili al Master Richieste");
+        exit(EXIT_FAILURE);
+
+    }
 
     bzero(&sa, sizeof(sa));
     sa.sa_handler = sigHandlerRich;
@@ -72,12 +83,12 @@ int main(int argc, char* argv[]){
 
         if( (richild[i] = fork()) == -1 ){
 
-            perror("\n\nErrore nella generazione di un processo richiesta. ERRNO = '%s'\n\n", strerror(errno));
+            printf("\n\nErrore nella generazione di un processo richiesta. ERRNO = '%s'\n\n", strerror(errno));
             exit(EXIT_FAILURE);
 
         }else if( richild[i] == 0 ){
 
-            execvp("./richiesta", NULL);
+            execvp("./richiesta", args);
 
         }else
             ++nbChild;
@@ -103,6 +114,7 @@ int main(int argc, char* argv[]){
 
     }
 
+    free(richild);
 
     return 0;
 

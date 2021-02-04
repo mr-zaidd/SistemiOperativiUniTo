@@ -8,11 +8,11 @@ void deallocazione(int, conf*);
 
 void deallocazione(int mykey, conf* sConf){
 
-    free(sConf);
     int shmid = shmget(mykey, 0, IPC_CREAT | 0666);
     int msgid = msgget(mykey, IPC_CREAT | 0666);
     shmctl(shmid, IPC_RMID, 0);
     msgctl(msgid, IPC_RMID, NULL);
+    free(sConf);
 
 }
 
@@ -20,7 +20,6 @@ void deallocazione(int mykey, conf* sConf){
 
 int main(){
 
-    int shmid;
     struct sigaction sa;
     int myKey = ftok(".",'X');
     FILE* fp;
@@ -69,7 +68,7 @@ int main(){
 
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
-    deallocazione(myKey);
+    deallocazione(myKey, sConf);
 
     return 0;
 
