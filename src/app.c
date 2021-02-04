@@ -3,7 +3,6 @@
 #include "./include/parse.h"
 #include "./include/sigLib.h"
 
-
 void deallocazione(int, conf*);
 
 void deallocazione(int mykey, conf* sConf){
@@ -57,13 +56,13 @@ int main(){
     args[0] = "./mRichieste";
     sprintf(str, "%d", sConf -> nSource);
     args[1] = str;
-    if( (figli[1]  = fork()) == -1 ){
+    if( (figli[0]  = fork()) == -1 ){
 
         perror("\n\nErrore nella generazione di Master Richieste\n\n");
         deallocazione(myKey, sConf);
         exit(EXIT_FAILURE);
 
-    }else if( figli[1] == 0 )
+    }else if( figli[0] == 0 )
         execvp(args[0], args);
 
     printf("\n\nAlarm Settato\n\n");
@@ -75,7 +74,7 @@ int main(){
     /* ATTESA MORTE DI MASTER TAXI E MASTER RICHIESTE */
     /* DA IMPLEMENTARE */
 
-    waitpid(figli[1], NULL, 0);
+    waitpid(figli[0], NULL, 0);
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     deallocazione(myKey, sConf);

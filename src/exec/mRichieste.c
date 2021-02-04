@@ -2,6 +2,8 @@
 #include "../include/mappa.h"
 #include "../include/parse.h"
 
+int maxProcs = 0;
+
 void createRichiesta(int, pid_t*, int);
 void killAllRichieste(pid_t*, int);
 void sigHandlerRich(int);
@@ -9,12 +11,16 @@ void sigHandlerRich(int);
 /* HANDLER */
 void sigHandlerRich(int signum){
 
+    int i;
+
     switch(signum){
 
         case SIGTERM:
             printf("\n\nSIGTERM Arrivato a MASTER RICHIESTE\n\n");
             fflush(stdout);
             kill(0, SIGTERM);
+            for(i = 0; i < maxProcs; i++)
+                wait(NULL);
             exit(0);
         default:
             kill(0, SIGTERM);
@@ -63,10 +69,11 @@ int main(int argc, char* argv[]){
     pid_t* richild = (pid_t*) malloc(nSource*sizeof(pid_t));
     pid_t killedChild;
     int nbChild = 0;
-    int i = 0;
-    int j = 0;
+    int i;
+    int j;
     struct sigaction sa;
     char* args[] = {NULL};
+    maxProcs = nSource;
 
     if(argc < 2){
 
@@ -81,7 +88,7 @@ int main(int argc, char* argv[]){
 
 
     /* CREAZIONE FIGLI RICHIESTE */
-    for(; i < nSource; i++){
+    for(i = 0; i < nSource; i++){
 
         if( (richild[i] = fork()) == -1 ){
 
@@ -102,12 +109,11 @@ int main(int argc, char* argv[]){
     while(nbChild){
 
         killedChild = waitpid(WAIT_ANY, NULL, 0);
-        for(; j < nSource; j++){
+        for(j = 0; j < nSource; j++){
 
             if( killedChild == richild[j] ){
                 printf("\n\nMorta la richiesta numero: %d con Pid: %d\n\n", i, (int)killedChild);
-                createRichiesta(j, richild, nSource); /* SE PASSO RICHILD QUI IN QUESTO MODO IL PUNTATORE è SUL J O SULLO 0? */
-                j = 0;
+                createRichiesta(j, richild, nSource);
                 ++nbChild;
             }
         }
