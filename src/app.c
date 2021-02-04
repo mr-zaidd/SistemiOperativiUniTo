@@ -3,6 +3,21 @@
 #include "./include/parse.h"
 #include "./include/sigLib.h"
 
+
+void deallocazione(int, conf*);
+
+void deallocazione(int mykey, conf* sConf){
+
+    free(sConf);
+    int shmid = shmget(mykey, 0, IPC_CREAT | 0666);
+    int msgid = msgget(mykey, IPC_CREAT | 0666);
+    shmctl(shmid, IPC_RMID, 0);
+    msgctl(msgid, IPC_RMID, NULL);
+
+}
+
+
+
 int main(){
 
     int shmid;
@@ -13,6 +28,9 @@ int main(){
     conf* sConf = (conf*) malloc(sizeof(conf));
     char* pathConf = "../conf.csv";
     char* pathKey = "./tmp/key";
+    pid_t figli[2];
+    char* args[2];
+    char str[12];
 
     /* IMPOSTAZIONE SIGNAL HANDLER */
     bzero(&sa, sizeof(sa));
@@ -31,19 +49,27 @@ int main(){
     printConf(sConf);
     createMappa(myKey, sConf->holes);
 
-    /* CREAZIONE FIGLI TAXI E FIGLI RICHIESTE 
-     *
-     * DA IMPLEMENTARE!
-     *
-     */
+    /* CREAZIONE MASTER RICHIESTE */
+    args[0] = "./mRichieste";
+    sprintf(str, "%d", sConf -> nSource);
+    args[1] = str;
+    if( (figli[1]  = fork()) == -1 ){
+
+        perror("\n\nErrore nella generazione di Master Richieste\n\n");
+        deallocazione(myKey, sConf);
+        exit(EXIT_FAILURE);
+
+    }else if( figli[1] == 0 )
+        execvp(args[0], args);
+
+
+    /* CREAZIONE MASTER TAXI */
+    /* DA IMPLEMENTARE */
 
 
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
-    free(sConf);
-    shmid = shmget(myKey, 0, IPC_CREAT | 0666);
-    shmctl(shmid, IPC_RMID, 0);
-
+    deallocazione(myKey);
 
     return 0;
 
