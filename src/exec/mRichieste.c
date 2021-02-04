@@ -4,6 +4,23 @@
 
 void createRichiesta(int, pid_t*, int);
 void killAllRichieste(pid_t*, int);
+void sigHandlerRich(int);
+
+/* HANDLER */
+void sigHandlerRich(int signum){
+
+    switch(signum){
+
+        case SIGTERM:
+            kill(SIGKILL, 0);
+            exit(0);
+        default:
+            kill(SIGTERM, 0);
+            exit(0);
+
+    }
+
+}
 
 /* CREA RICHIESTA */
 void createRichiesta(int j, pid_t* richild, int nSource){
@@ -43,6 +60,11 @@ int main(int argc, char* argv[]){
     int nbChild = 0;
     int i = 0;
     int j = 0;
+    struct sigaction sa;
+
+    bzero(&sa, sizeof(sa));
+    sa.sa_handler = sigHandlerRich;
+    sigaction(SIGTERM, &sa, NULL);
 
 
     /* CREAZIONE FIGLI RICHIESTE */
