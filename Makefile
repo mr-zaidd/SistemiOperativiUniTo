@@ -26,6 +26,9 @@ compile: app
 
 # INIZIO COMPILAZIONE
 
+compilazioneRichiesta: src/exec/richiesta.c
+	$(CC) $(CFLAGS) src/exec/richiesta.c -o bin/richiesta
+
 compilazioneMasterRichieste: src/exec/mRichieste.c
 	$(CC) $(CFLAGS) src/exec/mRichieste.c -o bin/mRichieste
 
@@ -38,5 +41,5 @@ compilazioneParse: src/libs/parse.c src/include/inc.h
 compilazioneMappa: src/libs/mappa.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/mappa.c -o build/mappa.o
 
-app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib compilazioneMasterRichieste
+app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib compilazioneMasterRichieste compilazioneRichiesta
 	$(CC) $(CFLAGS) src/app.c build/mappa.o build/parse.o build/sigLib.o -o bin/app

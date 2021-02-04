@@ -12,10 +12,12 @@ void sigHandlerRich(int signum){
     switch(signum){
 
         case SIGTERM:
-            kill(SIGKILL, 0);
+            kill(0, SIGKILL);
+            printf("\n\nSIGTERM Arrivato a MASTER RICHIESTE\n\n");
+            fflush(stdout);
             exit(0);
         default:
-            kill(SIGTERM, 0);
+            kill(0, SIGTERM);
             exit(0);
 
     }

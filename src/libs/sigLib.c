@@ -7,6 +7,8 @@ void sigHandlerDefault(int signum){
     int myKey;
     int shmid;
 
+    kill(0, SIGTERM);
+
     printf("\n\nRICEVUTO SEGNALE: %s\n\n", strsignal(signum));
     fp = fopen("./tmp/key", "r");
     if(fp == NULL)

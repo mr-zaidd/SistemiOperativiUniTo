@@ -36,6 +36,7 @@ int main(){
     sa.sa_handler = sigHandlerDefault;
     sigaction(SIGINT, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGALRM, &sa, NULL);
 
     /* CREAZIONE FILE KEY E SALVATAGGIO */
     sprintf(buff, "%d", myKey);
@@ -49,6 +50,7 @@ int main(){
     createMappa(myKey, sConf->holes);
 
     /* CREAZIONE MASTER RICHIESTE */
+    printf("\n\nStiamo creando il Master Richieste\n\n");
     args[0] = "./mRichieste";
     sprintf(str, "%d", sConf -> nSource);
     args[1] = str;
@@ -61,11 +63,18 @@ int main(){
     }else if( figli[1] == 0 )
         execvp(args[0], args);
 
+    sleep(1);
+
+    printf("\n\nAlarm Settato\n\n");
+    alarm(sConf->dur);
 
     /* CREAZIONE MASTER TAXI */
     /* DA IMPLEMENTARE */
 
+    /* ATTESA MORTE DI MASTER TAXI E MASTER RICHIESTE */
+    /* DA IMPLEMENTARE */
 
+    waitpid(WAIT_ANY, NULL, 0);
 
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     deallocazione(myKey, sConf);
