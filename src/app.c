@@ -76,6 +76,9 @@ int main(){
 
     waitpid(WAIT_ANY, NULL, 0);
 
+    printf("\n\nWAITPID finito faccio il raise di un SIGTERM\n\n");
+    raise(SIGTERM);
+
     /* RIMOZIONE ALLOCAZIONI GENERICHE */
     deallocazione(myKey, sConf);
 
