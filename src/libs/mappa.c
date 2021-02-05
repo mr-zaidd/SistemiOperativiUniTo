@@ -18,6 +18,21 @@ void printMX(cella* arr, int size, int enter){
     }
 }
 
+
+void updateCella(cella* arr, int att, int cap){
+
+    int i = 0;
+    for(; i < W*H; i++){
+
+        arr[i].attNSec = att;
+        arr[i].capacity = cap;
+        arr[i].richiesta = 0;
+
+    }
+
+}
+
+
 int insertHoles(cella* arr){
 
 
@@ -65,7 +80,7 @@ int insertHoles(cella* arr){
 }
 
 
-void createMappa(int myKey, int holes){
+void createMappa(int myKey, int holes, int att, int cap){
 
     cella* arr;
 
@@ -93,9 +108,11 @@ void createMappa(int myKey, int holes){
         arr[i] = c;
     }
 
-    printf("\n\n\nCreazione MAPPA =>\n\n");
-    printf("\n\nStiamo posizionando gli HOLES...");
-    printf("\n\n\n");
+    printf("\nCreazione MAPPA =>\n");
+    printf("\nImpostazione di attributi celle...\n");
+    updateCella(arr, att, cap);
+    printf("\nStiamo posizionando gli HOLES...");
+    printf("\n\n");
 
     fflush(stdout);
 

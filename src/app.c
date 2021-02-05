@@ -17,8 +17,6 @@ void deallocazione(int mykey, conf* sConf){
 
 }
 
-
-
 int main(){
 
     struct sigaction sa;
@@ -32,9 +30,10 @@ int main(){
     pid_t figli[2];
     char* argR[2];
     char str[12];
-    char* argT[3];
+    char* argT[4];
     char rts[12];
     char trs[12];
+    char rst[12];
 
     /* IMPOSTAZIONE SIGNAL HANDLER */
     bzero(&sa, sizeof(sa));
@@ -53,7 +52,7 @@ int main(){
     /* CREAZIONE E VERIFICA PARAMETRI E MAPPA */
     parse(sConf, pathConf);
     printConf(sConf);
-    createMappa(myKey, sConf->holes);
+    createMappa(myKey, sConf->holes, sConf->attCell, sConf->cap);
 
     /* CREAZIONE MASTER RICHIESTE */
     printf("\nStiamo creando il Master Richieste\n");
@@ -69,32 +68,30 @@ int main(){
     }else if( figli[0] == 0 )
         execvp(argR[0], argR);
 
-
-    /* CREAZIONE MASTER TAXI */
-    /* DA IMPLEMENTARE */
-    printf("\nStiamo creando il Master Taxi\n");
+    /* CREAZIONE MASTER TAXI
+    printf("\nStiamo creando il Master Taxi\n");*/
     argT[0] = "./mTaxi";
     sprintf(rts, "%d", sConf -> nTaxi);
     argT[1] = rts;
     sprintf(trs, "%d", sConf -> tOut);
     argT[2] = trs;
+    sprintf(rst, "%d", sConf -> cap);
+    argT[3] = rst;
     if( (figli[1] = fork()) == -1 ){
 
         perror("\n\nErrore nella generazione di Master Taxi\n\n");
         deallocazione(myKey, sConf);
         exit(EXIT_FAILURE);
 
-    }else if( figli[1] == 0 )
+    }else if( figli[1] == 0 ){
         execvp(argT[0], argT);
-
+    }
 
     /* TIMER DURATION */
     printf("\n\nAlarm Settato\n\n");
     alarm(sConf->dur);
 
-
     /* ATTESA MORTE DI MASTER TAXI E MASTER RICHIESTE */
-    /* DA IMPLEMENTARE */
     for(; c < 2; c++)
         waitpid(WAIT_ANY, NULL, 0);
 

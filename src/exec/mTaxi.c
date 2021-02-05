@@ -59,19 +59,26 @@ int main(int argc, char* argv[]){
 
     int nTaxi = atoi(argv[1]);
     int timeOut = atoi(argv[2]);
+    int capacity = atoi(argv[3]);
     pid_t* taxchild = (pid_t*) malloc(nTaxi*sizeof(pid_t));
     pid_t killedTaxi;
     int nCT = 0;
     int i;
     int j;
     struct sigaction sa;
-    char* args[2];
+    char* args[3];
     char str[12];
+    char rts[12];
     maxTaxi = nTaxi;
 
+    printf("SONO IL MTAXI");
+    fflush(stdout);
+
+    sprintf(rts, "%d", capacity);
     sprintf(str, "%d", timeOut);
     args[0] = "./taxi";
     args[1] = str;
+    args[2] = rts;
 
     if(argc < 3){
 
@@ -84,6 +91,7 @@ int main(int argc, char* argv[]){
     sa.sa_handler = sigHandlerTax;
     sigaction(SIGTERM, &sa, NULL);
 
+    printf("\n nTaxi: %d\n", nTaxi);
     /* CREAZIONE FIGLI TAXI */
     for(i = 0; i < nTaxi; i++){
 

@@ -73,6 +73,9 @@ int main(int argc, char* argv[]){
     char* args[] = {NULL};
     maxProcs = nSource;
 
+    printf("SONO MRICHIESTE");
+    fflush(stdout);
+
     if(argc < 2){
 
         printf("Errore nel passare le variabili al Master Richieste");
@@ -110,8 +113,8 @@ int main(int argc, char* argv[]){
         for(j = 0; j < nSource; j++){
 
             if( killedChild == richild[j] ){
-                printf("\n\nMorta la richiesta numero: %d con Pid: %d\n\n", j, (int)killedChild);
-                createRichiesta(j, richild, nSource);
+/*                printf("\n\nMorta la richiesta numero: %d con Pid: %d\n\n", j, (int)killedChild);
+*/                createRichiesta(j, richild, nSource);
                 ++nbChild;
             }
         }

@@ -9,15 +9,16 @@
         int capacity;
         int count;
 
-        void* taxi;
-        void* richieste;
+        pid_t* taxi;
+        pid_t richiesta;
 
     }cella;
 
 
     /* MAPPAH */
     int insertHoles(cella*);
-    void createMappa(int, int);
+    void updateCella(cella*, int, int);
+    void createMappa(int, int, int, int);
     void printMX(cella*, int, int);
 
 

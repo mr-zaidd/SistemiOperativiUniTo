@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -O2 -std=c89 -pedantic -IC -D W=60 -D H=20
+CFLAGS = -Wall -Wextra -g -O2 -std=c89 -pedantic -IC -D W=10 -D H=20
 
 BIN = bin/
 BUILD = build/
@@ -26,8 +26,8 @@ compile: app
 
 # INIZIO COMPILAZIONE
 
-compilazioneTaxi: src/exec/taxi.c
-	$(CC) $(CFLAGS) src/exec/taxi.c -o bin/taxi
+compilazioneTaxi: src/exec/taxi.c src/include/mappa.h
+	$(CC) $(CFLAGS) src/exec/taxi.c build/mappa.o -o bin/taxi
 
 compilazioneMasterTaxi: src/exec/mTaxi.c
 	$(CC) $(CFLAGS) src/exec/mTaxi.c -o bin/mTaxi
