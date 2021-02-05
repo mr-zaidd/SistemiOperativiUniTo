@@ -26,6 +26,12 @@ compile: app
 
 # INIZIO COMPILAZIONE
 
+compilazioneTaxi: src/exec/taxi.c
+	$(CC) $(CFLAGS) src/exec/taxi.c -o bin/taxi
+
+compilazioneMasterTaxi: src/exec/mTaxi.c
+	$(CC) $(CFLAGS) src/exec/mTaxi.c -o bin/mTaxi
+
 compilazioneRichiesta: src/exec/richiesta.c
 	$(CC) $(CFLAGS) src/exec/richiesta.c -o bin/richiesta
 
@@ -41,5 +47,5 @@ compilazioneParse: src/libs/parse.c src/include/inc.h
 compilazioneMappa: src/libs/mappa.c src/include/inc.h
 	$(CC) $(CFLAGS) -c src/libs/mappa.c -o build/mappa.o
 
-app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib compilazioneMasterRichieste compilazioneRichiesta
+app: src/app.c compilazioneParse compilazioneMappa compilazioneSigLib compilazioneMasterRichieste compilazioneRichiesta compilazioneMasterTaxi compilazioneTaxi
 	$(CC) $(CFLAGS) src/app.c build/mappa.o build/parse.o build/sigLib.o -o bin/app

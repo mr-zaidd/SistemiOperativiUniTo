@@ -22,8 +22,9 @@ void sigHandlerRich(int signum){
             exit(0);
         default:
             kill(0, SIGTERM);
+            for(i = 0; i < maxProcs; i++)
+               wait(NULL);
             exit(0);
-
     }
 
 }
@@ -36,7 +37,6 @@ void createRichiesta(int j, pid_t* richild, int nSource){
 
         printf("\n\nErrore nella generazione di un processo richiesta. ERRNO = '%s'\n\n", strerror(errno));
         killAllRichieste(richild, nSource);
-        exit(EXIT_FAILURE);
 
     }else if( richild[j] == 0 ){
 
@@ -103,14 +103,14 @@ int main(int argc, char* argv[]){
     }
 
 
-    /* ATTESA MORTE DI TUTTI I FIGLI */
+    /* ATTESA MORTE DI TUTTI I FIGLI FALZA */
     while(nbChild){
 
         killedChild = waitpid(WAIT_ANY, NULL, 0);
         for(j = 0; j < nSource; j++){
 
             if( killedChild == richild[j] ){
-                printf("\n\nMorta la richiesta numero: %d con Pid: %d\n\n", i, (int)killedChild);
+                printf("\n\nMorta la richiesta numero: %d con Pid: %d\n\n", j, (int)killedChild);
                 createRichiesta(j, richild, nSource);
                 ++nbChild;
             }
