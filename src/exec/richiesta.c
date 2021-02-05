@@ -5,7 +5,7 @@
 
 int main(){
 
-    printf("\nSono la richiesta con PID: %d\n", getpid());
+    printf("Sono la richiesta con PID: %d\n", getpid());
     fflush(stdout);
     while(1);
 

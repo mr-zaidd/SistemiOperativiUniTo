@@ -8,13 +8,12 @@ void sigHandlerDefault(int signum){
     int shmid;
 
     switch(signum){
-
         case SIGINT:
-            printf("\n\nRICEVUTO SEGNALE: %s\n\n", strsignal(signum));
-            fflush(stdout);
             fp = fopen("./tmp/key", "r");
-            if(fp == NULL)
+            if(fp == NULL){
                 printf("\n\nE' SBAGLIATO IL PATH DELLA KEY IN SIGLIB\n\n");
+                exit(EXIT_FAILURE);
+            }
             fgets(buff, 32, fp);
             myKey = atoi(buff);
 
@@ -25,7 +24,6 @@ void sigHandlerDefault(int signum){
         case SIGTERM:
             break;
        case SIGALRM:
-            printf("\n\nAlarm ricevuto ad APP\n\n");
             kill(0, SIGTERM);
             break;
         default:

@@ -16,8 +16,6 @@ void sigHandlerRich(int signum){
     switch(signum){
 
         case SIGTERM:
-            printf("\n\nSIGTERM Arrivato a MASTER RICHIESTE\n\n");
-            fflush(stdout);
             kill(0, SIGTERM);
             for(i = 0; i < maxProcs; i++)
                 wait(NULL);
