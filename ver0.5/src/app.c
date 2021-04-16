@@ -1,10 +1,12 @@
-#include "inc.h"
+#include "include/inc.h"
 
 int main(int argc, int *argv[]){
 
     int key;
     int shmid;
     int (*shmAt)[H];
+    int i = 0;
+    int j = 0;
 
     key = ftok(".", 'b');
     shmid = shmget(key,sizeof(int[H][W]), IPC_CREAT | 0666);
@@ -20,4 +22,28 @@ int main(int argc, int *argv[]){
             exit(1);
         }
     }
+
+    for(i=0; i<H; i++){
+
+        for(j=0; j<W; j++){
+
+            shmAt[i][j] = 1;
+
+        }
+
+    }
+
+
+    for(i=0; i<H; i++){
+        for(j=0; j<W; j++){
+            printf("%d\t", shmAt[i][j]);
+        }
+        printf("\n");
+    }
+
+    shmdt(shmAt);
+    shmctl(shmid, IPC_RMID, 0);
+
+    return 0;
+
 }
