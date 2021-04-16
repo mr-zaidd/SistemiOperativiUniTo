@@ -10,6 +10,7 @@ int main(int argc, int *argv[]){
     int j = 0;
 
     key = ftok(".", 'b');
+    createKeyFile(key);
     shmid = shmget(key,sizeof(int[H][W]), IPC_CREAT | 0666);
 
     if(shmid == -1){

@@ -23,4 +23,25 @@
             #error "W e H NON SONO STATE DEFINITE! (-D W60 -D H20)"
     #endif
 
+typedef struct conf{
+
+    int soTaxi;
+    int soSources;
+    int soHoles;
+    int soCap;
+    int soTime;
+    int soTimeOut;
+    int soDuration;
+
+}conf;
+
+typedef struct cell{
+
+    int one;
+    int soCap;;
+    int soTime;
+    int count;
+
+}cell;
+
 #endif
