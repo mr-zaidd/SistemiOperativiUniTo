@@ -1,4 +1,5 @@
 #include "include/inc.h"
+#include "include/mylib.h"
 
 int main(int argc, int *argv[]){
 
