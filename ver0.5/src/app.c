@@ -5,36 +5,13 @@ int main(int argc, int *argv[]){
 
     int key;
     int shmid;
-    int (*shmAt)[H];
+    cell* shmAt[H][W];
     int i = 0;
     int j = 0;
 
     key = ftok(".", 'b');
     createKeyFile(key);
-    shmid = shmget(key,sizeof(int[H][W]), IPC_CREAT | 0666);
-
-    if(shmid == -1){
-        perror("SHMGET");
-        exit(1);
-    }else{
-        printf("Creazione nuovo segmento SHM\n");
-        shmAt = shmat(shmid, 0, 0);
-        if(shmAt == (void*) -1){
-            perror("SHMAT");
-            exit(1);
-        }
-    }
-
-    for(i=0; i<H; i++){
-
-        for(j=0; j<W; j++){
-
-            shmAt[i][j] = 1;
-
-        }
-
-    }
-
+    shmid = createshm();
 
     for(i=0; i<H; i++){
         for(j=0; j<W; j++){
@@ -43,9 +20,7 @@ int main(int argc, int *argv[]){
         printf("\n");
     }
 
-    shmdt(shmAt);
-    shmctl(shmid, IPC_RMID, 0);
-
+    removeshm(shmid, &shmAt);
     return 0;
 
 }

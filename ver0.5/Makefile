@@ -24,5 +24,8 @@ clean:
 
 compile: app
 
-app: src/app.c src/include/inc.h
-	$(CC) $(CFLAGS) src/app.c -o bin/app
+myLib: src/libs/mylib.c src/include/mylib.h src/include/inc.h
+	$(CC) $(CFLAGS) -c src/libs/mylib.c -o build/mylib.o
+
+app: src/app.c src/include/inc.h myLib
+	$(CC) $(CFLAGS) src/app.c build/mylib.o -o bin/app

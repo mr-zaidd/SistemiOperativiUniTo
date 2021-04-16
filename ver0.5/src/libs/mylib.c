@@ -1,12 +1,18 @@
 #include "../include/mylib.h"
 
-void createshm(){
+int createshm(){
 
     int shmid;
     int size;
-    int (*shmAt)[H];
+    cell* shmAt[H][W];
     size = W*H*sizeof(cell);;
     shmid = shmget(readKey(), size, IPC_CREAT | 0666);
+
+    if(shmid == -1){
+        perror("SHMGET");
+        exit(1);
+    }
+
     fillshm(shmid);
     return shmid;
 
@@ -24,13 +30,27 @@ int readKey(){
     return key;
 }
 
-void removeshm(){}
+void removeshm(int shmid, cell** shmAt){
+
+    shmdt(*shmAt);
+    shmctl(shmid, IPC_RMID, 0);
+
+}
 
 void fillshm(int shmid){
 
-    cell (*head)[H];
-    head = ; //NON SO COSA FARE
-
+    int i;
+    int j;
+    cell* head[W][H];
+    head[W][H] = (cell*)shmat(shmid,NULL,0);
+    for(i=0; i<W; i++){
+        for(j=0;j<H; j++){
+            if((i%2) != 0)
+                head[i][j] -> one = 1;
+            else
+                head[i][j] -> one = 0;
+        }
+    }
 }
 
 void holeshm(){}
@@ -51,20 +71,14 @@ void createKeyFile(int key){
 void printConf(conf* confg){
 
     printf(
-            "\nTAXI: %d
-            \nSOURCE: %d
-            \nHOLES: %d
-            \nCAPACITA': %d
-            \nATTRAVERSAMENTO CELLA: %d
-            \nTIMEOUT: %d
-            \nDARATION: %d\n",
+            "\nTAXI: %d\nSOURCE: %d\nHOLES: %d\nCAPACITA: %d\nATTRAVERSAMENTO CELLA: %d\nTIMEOUT: %d\nDURATION: %d\n",
             confg -> soTaxi,
             confg -> soSources,
             confg -> soHoles,
             confg -> soCap,
             confg -> soTime,
             confg -> soTimeOut,
-            confg -> soDuration,
+            confg -> soDuration
             );
 
 }
@@ -76,7 +90,7 @@ void parse(conf* confg, char* path){
     int confs[9] = {0};
     int j = 0;
 
-    if(fp == Null){
+    if(fp == NULL){
 
         perror("\nFile di Configurazione non trovato...\n");
         exit(1);

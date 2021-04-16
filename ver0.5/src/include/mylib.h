@@ -4,8 +4,14 @@
 
 #include "inc.h"
 
-void createshm();
+int createshm();
 void holeshm();
-void removeshm();
+void removeshm(int shmid, cell **shmAt);
+void fillshm(int shmid);
+int readKey();
+void holeshm();
+void createKeyFile(int key);
+void printConf(conf* confg);
+void parse(conf* confg, char* path);
 
 #endif
