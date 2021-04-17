@@ -60,8 +60,8 @@ void fillshm(int shmid){
     cell (*head)[W];
     head = shmat(shmid,NULL,0);
     printf("DEBUG: SHAT eseguito\n");
-    for(i=0; i<W; i++){
-        for(j=0;j<H; j++){
+    for(i=0; i<H; i++){
+        for(j=0;j<W; j++){
             if((i%2) != 0)
                 head[i][j].one = 1;
             else
