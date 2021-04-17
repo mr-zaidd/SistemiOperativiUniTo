@@ -6,7 +6,7 @@
 
 int createshm();
 void holeshm();
-void removeshm(int shmid, cell **shmAt);
+void removeAll(int shmid);
 void fillshm(int shmid);
 int readKey();
 void holeshm();

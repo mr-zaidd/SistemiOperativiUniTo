@@ -38,7 +38,7 @@ typedef struct conf{
 typedef struct cell{
 
     int one;
-    int soCap;;
+    int soCap;
     int soTime;
     int count;
 

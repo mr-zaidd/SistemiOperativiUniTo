@@ -4,14 +4,15 @@ int createshm(){
 
     int shmid;
     int size;
-    cell* shmAt[H][W];
-    size = W*H*sizeof(cell);;
+    size = W*H*sizeof(cell);
     shmid = shmget(readKey(), size, IPC_CREAT | 0666);
 
     if(shmid == -1){
         perror("SHMGET");
         exit(1);
     }
+
+    printf("DEBUG: Creata SHM\n");
 
     fillshm(shmid);
     return shmid;
@@ -20,20 +21,35 @@ int createshm(){
 
 int readKey(){
 
-    FILE* fp;
-    int key;
-    char k;
-    fp = fopen("tmp/key","r");
-    k = fgetc(fp);
-    key = atoi(&k);
+    FILE* fp = fopen("tmp/key", "r");
+    int k = 0;
+
+    while(!feof(fp))
+        fscanf(fp, "%d", &k);
     fclose(fp);
-    return key;
+    printf("\nDEBUG: READ KEY: %d\n", k);
+    return k;
+
 }
 
-void removeshm(int shmid, cell** shmAt){
+void removeAll(int shmid){
 
-    shmdt(*shmAt);
-    shmctl(shmid, IPC_RMID, 0);
+    struct shmid_ds shmid_ds, *buf;
+    char* path = "tmp/key";
+    buf = &shmid_ds;
+
+    shmctl(shmid, IPC_STAT, buf);
+    if(buf->shm_nattch == 0){
+        if((shmctl(shmid, IPC_RMID, 0)) == -1){
+            perror("\nEliminazione SHM non andata a buon fine, att -> 0\n");
+        }else
+            printf("\nSHM ELIMINATA\n");
+    }else{
+        perror("\nCi sono ancora attachments alla shm da altri processi\n");
+        /* Scrivere la funzione di uccisione di tutti i processi */
+    }
+
+    remove(path);
 
 }
 
@@ -41,16 +57,18 @@ void fillshm(int shmid){
 
     int i;
     int j;
-    cell* head[W][H];
-    head[W][H] = (cell*)shmat(shmid,NULL,0);
+    cell (*head)[W];
+    head = shmat(shmid,NULL,0);
+    printf("DEBUG: SHAT eseguito\n");
     for(i=0; i<W; i++){
         for(j=0;j<H; j++){
             if((i%2) != 0)
-                head[i][j] -> one = 1;
+                head[i][j].one = 1;
             else
-                head[i][j] -> one = 0;
+                head[i][j].one = 0;
         }
     }
+    printf("DEBUG: FILL SHM eseguito\n");
 }
 
 void holeshm(){}
@@ -58,12 +76,14 @@ void holeshm(){}
 void createKeyFile(int key){
 
     FILE* tmp = fopen("tmp/key","w");
+    char k[16];
+    sprintf(k, "%d", key);
     if(tmp == NULL){
         puts("\nImpossibile creare file tmp...\n");
         exit(EXIT_FAILURE);
     }else{
         puts("\nCreazione file tmp...\n");
-        fputs(key,tmp);
+        fputs(k,tmp);
         fclose(tmp);
     }
 }
