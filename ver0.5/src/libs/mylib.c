@@ -27,7 +27,6 @@ int readKey(){
     while(!feof(fp))
         fscanf(fp, "%d", &k);
     fclose(fp);
-    printf("\nDEBUG: READ KEY: %d\n", k);
     return k;
 
 }
@@ -59,7 +58,6 @@ void fillshm(int shmid){
     int j;
     cell (*head)[W];
     head = shmat(shmid,NULL,0);
-    printf("DEBUG: SHAT eseguito\n");
     for(i=0; i<H; i++){
         for(j=0;j<W; j++){
             if((i%2) != 0)
@@ -68,10 +66,15 @@ void fillshm(int shmid){
                 head[i][j].one = 0;
         }
     }
+    shmdt(head);
     printf("DEBUG: FILL SHM eseguito\n");
 }
 
-void holeshm(){}
+void holeshm(){
+
+    /* DA SCRIVERE */
+
+}
 
 void createKeyFile(int key){
 

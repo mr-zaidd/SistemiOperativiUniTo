@@ -11,8 +11,7 @@ int main(){
 
     key = ftok(".", 'b');
     createKeyFile(key);
-    printf("DEBUG: prima creazione dopo file\n");
-    fflush(stdout);
+    printf("DEBUG: READ KEY: %d\n", readKey());
     shmid = createshm();
     shmAt = shmat(shmid, NULL, 0);
 
@@ -24,9 +23,6 @@ int main(){
     }
 
     shmdt(shmAt);
-    printf("DEBUG: READKEY2: %d", readKey());
-    fflush(stdout);
-    sleep(10);
     removeAll(shmid);
     return 0;
 
