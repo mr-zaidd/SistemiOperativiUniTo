@@ -27,3 +27,15 @@ int main(){
     return 0;
 
 }
+
+/****
+ *
+ *
+ *              (I) PRENDERE I DATI DI CONFIG DAL FILE E SALVARLI IN STRUTTURA
+ *
+ *              (II) PASSARE IL NUMERO DI HOLES A FILLSHM()
+ *
+ *
+ */
+
+
