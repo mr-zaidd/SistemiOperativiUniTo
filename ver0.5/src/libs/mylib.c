@@ -13,10 +13,7 @@ int createshm(){
     }
 
     printf("DEBUG: Creata SHM\n");
-
-    fillshm(shmid);
     return shmid;
-
 }
 
 int getshmid(){
@@ -62,20 +59,24 @@ void removeAll(int shmid){
 
 }
 
-void fillshm(int shmid){
+void fillshm(int holes){
 
     int i;
     int j;
     cell (*head)[W];
-    head = shmat(shmid,NULL,0);
+    head = shmat(getshmid(), NULL, 0);
     for(i=0; i<H; i++){
-        for(j=0;j<W; j++){
-            if((i%2) != 0)
-                head[i][j].one = 1;
-            else
-                head[i][j].one = 0;
+        for(j=0; j<W; j++){
+            if(head[i][j].one == 1)
+                printf("%d\t%d\n%d\n", i, j, head[i][j].one);
         }
     }
+
+    while(holes != 0){
+        holesHandler();
+        holes--;
+    }
+
     shmdt(head);
     printf("DEBUG: FILL SHM eseguito\n");
 }
@@ -86,6 +87,7 @@ void insertHole(int i, int j){
     cell (*head)[W] = shmat(shmid, NULL, 0);
 
     head[i][j].one = 1;
+    printf("Inserito HOLE\n");
 
     shmdt(head);
 
@@ -96,9 +98,15 @@ int checkFreedom(int i, int j, char* pos){
     int shmid = getshmid();
     cell (*head)[W] = shmat(shmid, NULL, 0);
     int intPos = 0;
-    if(strcmp(pos,"angoloSxA") == 0)
+
+    if(head[i][j].one == 1){
+        shmdt(head);
+        return 0;
+    }
+
+    if(strcmp(pos, "angoloSxA") == 0)
         intPos = 1;
-    if(strcmp(pos,"angoloDxA") ==  0)
+    if(strcmp(pos, "angoloDxA") ==  0)
         intPos = 2;
     if(strcmp(pos, "angoloSxB") == 0)
         intPos = 3;
@@ -110,7 +118,7 @@ int checkFreedom(int i, int j, char* pos){
         intPos = 6;
     if(strcmp(pos, "latoA") == 0)
         intPos = 7;
-    if(strcmp(pos,"latoB") == 0)
+    if(strcmp(pos, "latoB") == 0)
         intPos = 8;
 
     switch(intPos){
@@ -251,10 +259,10 @@ void holesHandler(){
     int j;
     int ins = 1;
 
-    srand(time(0));
 
     while(ins){
 
+        srand(time(NULL));
         i = rand()%(H+1);
         j = rand()%(W+1);
         pos = checkPosition(i, j);
@@ -382,4 +390,24 @@ void parseConf(conf* confg, char* path){
         perror("Parametri del file di Configurazione Non Validi");
         exit(EXIT_FAILURE);
     }
+}
+
+void printMatx(){
+
+    int i;
+    int j;
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+
+    for(i=0; i<H; i++){
+        for(j=0; j<W; j++){
+            if(head[i][j].one == 1)
+                printf("X\t");
+            else
+                printf(".\t");
+        }
+        printf("\n");
+    }
+
+    shmdt(head);
+
 }

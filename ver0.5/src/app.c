@@ -5,29 +5,60 @@ int main(){
 
     int key;
     int shmid;
+    int c;
     cell (*shmAt)[W];
     char* fileConf = "../conf/conf.csv";
-    int i = 0;
-    int j = 0;
+    char* ch[3];
     conf* confg;
+    pid_t figli[2];
 
     confg = (conf*) malloc(sizeof(conf));
     key = ftok(".", 'b');
     createKeyFile(key);
     printf("DEBUG: READ KEY: %d\n", readKey());
     parseConf(confg, fileConf);
+    printConf(confg);
     shmid = createshm();
     shmAt = shmat(shmid, NULL, 0);
+    fillshm(confg -> soHoles);
+    printMatx();
 
-    for(i=0; i<H; i++){
-        for(j=0; j<W; j++){
-            printf("%d\t", shmAt[i][j].one);
-        }
-        printf("\n");
+    ch[0] = "ls";
+    ch[1] = "-latr";
+    ch[2] = NULL;
+
+    if((figli[0]=fork()) == -1){
+
+        perror("\nDEBUG: FORK ANDATO MALE\n");
+        shmdt(shmAt);
+        removeAll(shmid);
+        free(confg);
+        exit(EXIT_FAILURE);
+
+    }else if(figli[0] == 0){
+        execvp(ch[0], ch);
     }
+
+    if((figli[1]=fork()) == -1){
+
+        perror("\nDEBUG: FORK ANDATO MALE\n");
+        shmdt(shmAt);
+        removeAll(shmid);
+        free(confg);
+        exit(EXIT_FAILURE);
+
+    }else if(figli[1] == 0){
+
+        execvp(ch[0], ch);
+    }
+
+    for(c=0; c<2;c++)
+        waitpid(WAIT_ANY, NULL, 0);
+
 
     shmdt(shmAt);
     removeAll(shmid);
+    free(confg);
     return 0;
 
 }
@@ -35,10 +66,13 @@ int main(){
 /****
  *
  *
- *              (I) PRENDERE I DATI DI CONFIG DAL FILE E SALVARLI IN STRUTTURA
+ *              (I) PRENDERE I DATI DI CONFIG DAL FILE E SALVARLI IN STRUTTURA **FATTO**
  *
- *              (II) PASSARE IL NUMERO DI HOLES A FILLSHM()
+ *              (II) PASSARE IL NUMERO DI HOLES A FILLSHM() **FATTO**
  *
+ *              (III) SEGMENTATION FAULT CHECKFREEDOM() LINE 102 **FATTO**
+ *
+ *              (IV) FAR FARE FIGLI AD APP.C
  *
  */
 
