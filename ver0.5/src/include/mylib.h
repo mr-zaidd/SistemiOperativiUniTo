@@ -12,9 +12,9 @@ int readKey();
 void holesHandler();
 void createKeyFile(int key);
 void printConf(conf* confg);
-void parse(conf* confg, char* path);
+void parseConf(conf* confg, char* path);
 char* checkPosition(int i, int j);
-int checkFreedom(int i, int j);
+int checkFreedom(int i, int j, char* pos);
 void insertHole(int i, int j);
 
 #endif

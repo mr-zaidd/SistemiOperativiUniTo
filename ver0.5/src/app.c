@@ -6,12 +6,16 @@ int main(){
     int key;
     int shmid;
     cell (*shmAt)[W];
+    char* fileConf = "../conf/conf.csv";
     int i = 0;
     int j = 0;
+    conf* confg;
 
+    confg = (conf*) malloc(sizeof(conf));
     key = ftok(".", 'b');
     createKeyFile(key);
     printf("DEBUG: READ KEY: %d\n", readKey());
+    parseConf(confg, fileConf);
     shmid = createshm();
     shmAt = shmat(shmid, NULL, 0);
 

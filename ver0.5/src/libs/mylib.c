@@ -80,6 +80,169 @@ void fillshm(int shmid){
     printf("DEBUG: FILL SHM eseguito\n");
 }
 
+void insertHole(int i, int j){
+
+    int shmid = getshmid();
+    cell (*head)[W] = shmat(shmid, NULL, 0);
+
+    head[i][j].one = 1;
+
+    shmdt(head);
+
+}
+
+int checkFreedom(int i, int j, char* pos){
+
+    int shmid = getshmid();
+    cell (*head)[W] = shmat(shmid, NULL, 0);
+    int intPos = 0;
+    if(strcmp(pos,"angoloSxA") == 0)
+        intPos = 1;
+    if(strcmp(pos,"angoloDxA") ==  0)
+        intPos = 2;
+    if(strcmp(pos, "angoloSxB") == 0)
+        intPos = 3;
+    if(strcmp(pos, "angoloDxB") == 0)
+        intPos = 4;
+    if(strcmp(pos, "latoSx") == 0)
+        intPos = 5;
+    if(strcmp(pos, "latoDx") == 0)
+        intPos = 6;
+    if(strcmp(pos, "latoA") == 0)
+        intPos = 7;
+    if(strcmp(pos,"latoB") == 0)
+        intPos = 8;
+
+    switch(intPos){
+
+        case 1:
+            if(head[i][j+1].one == 0){
+                if(head[i+1][j].one == 0){
+                    if(head[i+1][j+1].one == 0){
+                        shmdt(head);
+                        return 1;
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 2:
+            if(head[i][j-1].one == 0){
+                if(head[i+1][j].one == 0){
+                    if(head[i+1][j-1].one == 0){
+                        shmdt(head);
+                        return 1;
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 3:
+            if(head[i][j+1].one == 0){
+                if(head[i-1][j].one == 0){
+                    if(head[i-1][j+1].one == 0){
+                        shmdt(head);
+                        return 1;
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 4:
+            if(head[i][j-1].one == 0){
+                if(head[i-1][j].one == 0){
+                    if(head[i-1][j-1].one == 0){
+                        shmdt(head);
+                        return 1;
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 5:
+            if(head[i][j+1].one == 0){
+                if(head[i+1][j].one == 0){
+                    if(head[i-1][j+1].one == 0){
+                        if(head[i+1][j+1].one == 0){
+                            if(head[i-1][j].one == 0){
+                                shmdt(head);
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 6:
+            if(head[i][j-1].one == 0){
+                if(head[i+1][j].one == 0){
+                    if(head[i-1][j-1].one == 0){ 
+                        if(head[i+1][j-1].one == 0){
+                            if(head[i-1][j].one == 0){
+                                shmdt(head);
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 7:
+            if(head[i][j-1].one == 0){
+                if(head[i+1][j].one == 0){ 
+                    if(head[i+1][j-1].one == 0){
+                        if(head[i-1][j].one == 0){
+                            if(head[i-1][j-1].one == 0){
+                                shmdt(head);
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        case 8:
+            if(head[i][j-1].one == 0){
+                if(head[i][j+1].one == 0){
+                    if(head[i-1][j].one == 0){
+                        if(head[i-1][j-1].one == 0){
+                            if(head[i-1][j+1].one == 0){
+                                shmdt(head);
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+        default:
+            if(head[i][j+1].one == 0){
+                if(head[i][j-1].one == 0){
+                    if(head[i+1][j].one == 0){
+                        if(head[i+1][j+1].one == 0){
+                            if(head[i+1][j-1].one == 0){
+                                if(head[i-1][j].one == 0){
+                                    if(head[i-1][j+1].one == 0){
+                                        if(head[i-1][j-1].one == 0){
+                                            shmdt(head);
+                                            return 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            shmdt(head);
+            return 0;
+    }
+}
+
 void holesHandler(){
 
     char* pos;
@@ -101,152 +264,6 @@ void holesHandler(){
             ins = 0;
         }
 
-    }
-}
-
-void insertHole(int i, int j){
-
-    int shmid = getshmid();
-    cell (*head)[W] = shmat(shmid, NULL, 0);
-
-    head[i][j].one = 1;
-
-    shmdt(head);
-
-}
-
-int checkFreedom(int i, int j, char* pos){
-
-    int shmid = getshmid();
-    cell (*head)[W] = shmat(shmid, NULL, 0);
-
-    switch(pos){
-
-        case "angoloSxA":
-            if(head[i][j+1].one == 0){
-                if(head[i+1][j].one == 0){
-                    if(head[i+1][j+1].one == 0){
-                        shmdt(head);
-                        return 1;
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "angoloDxA":
-            if(head[i][j-1].one == 0){
-                if(head[i+1][j].one == 0){
-                    if(head[i+1][j-1].one == 0){
-                        shmdt(head);
-                        return 1;
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "angoloSxB":
-            if(head[i][j+1].one == 0){
-                if(head[i-1][j].one == 0){
-                    if(head[i-1][j+1].one == 0){
-                        shmdt(head);
-                        return 1;
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "angoloDxB":
-            if(head[i][j-1].one == 0){
-                if(head[i-1][j].one == 0){
-                    if(head[i-1][j-1].one == 0){
-                        shmdt(head);
-                        return 1;
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "latoSx":
-            if(head[i][j+1].one == 0){
-                if(head[i+1][j].one == 0){
-                    if(head[i-1][j+1].one == 0){
-                        if(head[i+1][j+1].one == 0){
-                            if(head[i-1][j]){
-                                shmdt(head);
-                                return 1;
-                            }
-                        }
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "latoDx":
-            if(head[i][j-1].one == 0){
-                if(head[i+1][j].one == 0){
-                    if(head[i-1][j-1].one == 0){ 
-                        if(head[i+1][j-1].one == 0){
-                            if(head[i-1][j]){
-                                shmdt(head);
-                                return 1;
-                            }
-                        }
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "latoA":
-            if(head[i][j-1].one == 0){
-                if(head[i+1][j].one == 0){ 
-                    if(head[i+1][j-1].one == 0){
-                        if(head[i-1][j].one == 0){
-                            if(head[i-1][j-1].one == 0){
-                                shmdt(head);
-                                return 1;
-                            }
-                        }
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        case "latoB":
-            if(head[i][j-1].one == 0){
-                if(head[i][j+1].one == 0){
-                    if(head[i-1][j].one == 0){
-                        if(head[i-1][j-1].one == 0){
-                            if(head[i-1][j+1]){
-                                shmdt(head);
-                                return 1;
-                            }
-                        }
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
-        default:
-            if(head[i][j+1].one == 0){
-                if(head[i][j-1].one == 0){
-                    if(head[i+1][j].one == 0){
-                        if(head[i+1][j+1].one == 0){
-                            if(head[i+1][j-1].one == 0){
-                                if(head[i-1][j].one == 0){
-                                    if(head[i-1][j+1].one == 0){
-                                        if(head[i-1][j-1] == 0){
-                                            shmdt(head);
-                                            return 1;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            shmdt(head);
-            return 0;
     }
 }
 
@@ -303,7 +320,7 @@ void printConf(conf* confg){
 
 }
 
-void parse(conf* confg, char* path){
+void parseConf(conf* confg, char* path){
 
     FILE* fp = fopen(path, "r");
     char line[512];
