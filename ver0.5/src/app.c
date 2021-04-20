@@ -8,7 +8,9 @@ int main(){
     int c;
     cell (*shmAt)[W];
     char* fileConf = "../conf/conf.csv";
-    char* ch[3];
+    char* ch[4];
+    char* timeOut[16];
+    char* dur[16];
     conf* confg;
     pid_t figli[2];
 
@@ -23,9 +25,13 @@ int main(){
     fillshm(confg -> soHoles);
     printMatx();
 
-    ch[0] = "ls";
-    ch[1] = "-latr";
-    ch[2] = NULL;
+    sprintf(timeOut, "%d", confg->soTimeOut);
+    sprintf(dur, "%d", confg->soDuration);
+
+    ch[0] = "./exe/taxiH";
+    ch[1] = timeOut;
+    ch[2] = dur;
+    ch[3] = NULL;
 
     if((figli[0]=fork()) == -1){
 
@@ -63,8 +69,7 @@ int main(){
 
 }
 
-/****
- *
+/*
  *
  *              (I) PRENDERE I DATI DI CONFIG DAL FILE E SALVARLI IN STRUTTURA **FATTO**
  *
@@ -72,7 +77,11 @@ int main(){
  *
  *              (III) SEGMENTATION FAULT CHECKFREEDOM() LINE 102 **FATTO**
  *
- *              (IV) FAR FARE FIGLI AD APP.C
+ *              (IV) FAR FARE FIGLI AD APP.C **FATTO**
+ *
+ *              (V) INIZIARE TAXIHANDLER **FATTO**
+ *
+ *              (VI) 
  *
  */
 
