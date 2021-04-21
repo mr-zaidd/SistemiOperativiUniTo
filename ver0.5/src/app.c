@@ -9,8 +9,8 @@ int main(){
     cell (*shmAt)[W];
     char* fileConf = "../conf/conf.csv";
     char* ch[4];
-    char* timeOut[16];
-    char* dur[16];
+    char* timeOut = (char*)malloc(16*sizeof(char));
+    char* dur = (char*)malloc(16*sizeof(char));
     conf* confg;
     pid_t figli[2];
 
@@ -81,7 +81,7 @@ int main(){
  *
  *              (V) INIZIARE TAXIHANDLER **FATTO**
  *
- *              (VI) 
+ *              (VI) SEGMENTATION FAULT DOPO AVER INSERITO HOLES 
  *
  */
 
