@@ -24,6 +24,7 @@
     #endif
 
     #include "key.h"
+    #include "shmLibs.h"
 
 typedef struct conf{
 
