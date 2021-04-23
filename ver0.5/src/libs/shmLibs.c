@@ -84,12 +84,68 @@ int checkPosition(int i, int j){
     return pos;
 }
 
+/* Ritorna ZERO se è occupato */
 int checkFreedom(int i, int j, int pos){
 
-    
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    int ret = 1;
+
+    switch(pos){
+
+        case 1: /* angolo alto sinistro */
+            if(head[i][j+1].one == 1 || head[i+1][j+1].one == 1 || head[i+1][j].one == 1)
+                ret = 0;
+            break;
+        case 2: /* angolo alto destro */
+            if(head[i][j-1].one == 1 || head[i+1][j-1].one == 1 || head[i+1][j].one == 1)
+                ret = 0;
+            break;
+        case 3: /* lato sinistro */
+            if(head[i+1][j+1].one == 1 || head[i-1][j+1].one == 1 || head[i+1][j].one == 1 || head[i][j+1].one == 1 ||head[i-1][j].one == 1)
+                ret = 0;
+            break;
+        case 4: /* lato destro */
+            if(head[i-1][j].one == 1 || head[i+1][j].one == 1 || head[i-1][j-1].one == 1 || head[i+1][j-1].one == 1 || head[i][j-1].one == 1)
+                ret = 0;
+            break;
+        case 5: /* angolo basso sinistro */
+            if(head[i][j+1].one == 1 || head[i-1][j+1].one == 1 || head[i-1][j].one == 1)
+                ret = 0;
+            break;
+        case 6: /* angolo basso destro */
+            if(head[i-1][j].one == 1 || head[i-1][j-1].one == 1 || head[i][j-1].one == 1)
+                ret = 0;
+            break;
+        case 7: /* lato alto */
+            if(head[i+1][j+1].one == 1 || head[i+1][j-1].one == 1 || head[i+1][j].one == 1 || head[i][j-1].one == 1 || head[i][j+1].one == 1)
+                ret = 0;
+            break;
+        case 8: /* lato basso */
+            if(head[i][j-1].one == 1 || head[i][j+1].one == 1 || head[i-1][j].one == 1 || head[i-1][j-1].one == 1 || head[i-1][j+1].one == 1)
+                ret = 0;
+            break;
+        case 9: /* posizione libera */
+            if(head[i][j+1].one == 1 || head[i][j-1].one == 1 || head[i+1][j].one == 1 || head[i+1][j+1].one == 1 || head[i+1][j-1].one == 1 || head[i-1][j].one == 1 || head[i-1][j+1].one == 1 || head[i-1][j-1].one == 1)
+                ret = 0;
+            break;
+        default:
+            printf("\nPosizione:%d\n", pos);
+    }
+
+    shmdt(head);
+    return ret;
 
 }
 
+void insertHole(int i, int j){
+
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+
+    head[i][j].one = 1;
+
+    shmdt(head);
+
+}
 
 void holesHandler(int holes){
 
@@ -106,19 +162,41 @@ void holesHandler(int holes){
         tmp = checkOne(i,j);
         if(tmp == 1){
             pos = checkPosition(i,j);
-            free = checkPosition(i, j, pos);
+            free = checkFreedom(i, j, pos);
             if(free == 1){
                 insertHole(i, j);
                 holes--;
             }
         }
     }
-
 }
 
+void printMtx(){
+    int i;
+    int j;
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    for(i = 0; i < H; i++){
+        for(j = 0; j < W; j++){
+            if(head[i][j].one == 1)
+                printf("X\t");
+            else if(head[i][j].one == 0)
+                printf(".\t");
+        }
+        printf("\n");
+    }
+    shmdt(head);
+}
 
+void fillConf(conf* confg){
 
-
-
-
-
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    for(i = 0; i < H; i++){
+        for(j = 0; j < W; j++){
+            head[i][j].one = 0;
+            head[i][j].soCap = confg -> soCap;
+            head[i][j].soTime = confg -> soTime;
+            head[i][j].count = 0;
+        }
+    }
+    shmdt(head);
+}
