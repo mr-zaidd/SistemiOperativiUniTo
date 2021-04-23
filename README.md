@@ -19,10 +19,3 @@ che effettuano le modifiche all'interno della memoria condivisa tramite la coda 
 
 + libs: contiene i file sorgenti delle librerie.
 
-
-## Osservazioni
-
-Il progetto non è stato completato per raggiunti limiti di tempo.
-La funzione ricorsiva movimento(), all'interno di taxi.c, utilizzata per la ricerca del percorso
-all'interno della matrice avrebbe richiesto un maggiore debugging per determinare la ragione del mai
-verificarsi della condizione di terminazione.
