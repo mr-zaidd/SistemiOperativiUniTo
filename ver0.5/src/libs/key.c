@@ -1,7 +1,4 @@
-#include <stdio.h>
-
-#include "../include/key.h"
-
+#include "../include/inc.h"
 
 void createKeyFile(int key){
 

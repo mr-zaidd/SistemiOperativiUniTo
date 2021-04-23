@@ -1,5 +1,4 @@
 #include "include/inc.h"
-#include "include/mylib.h"
 
 int main(){
 
@@ -22,9 +21,10 @@ int main(){
     printConf(confg);
     shmid = createshm();
     shmAt = shmat(shmid, NULL, 0);
-    fillshm(confg -> soHoles);
-    printMatx();
-
+    fillConf(confg);
+    holesHandler(confg->soHoles);
+    printMtx();
+/**
     sprintf(timeOut, "%d", confg->soTimeOut);
     sprintf(dur, "%d", confg->soDuration);
 
@@ -60,29 +60,14 @@ int main(){
 
     for(c=0; c<2;c++)
         waitpid(WAIT_ANY, NULL, 0);
-
+**/
 
     shmdt(shmAt);
-    removeAll(shmid);
+    deleteshm();;
     free(confg);
+    free(dur);
+    free(timeOut);
     return 0;
 
 }
-
-/*
- *
- *              (I) PRENDERE I DATI DI CONFIG DAL FILE E SALVARLI IN STRUTTURA **FATTO**
- *
- *              (II) PASSARE IL NUMERO DI HOLES A FILLSHM() **FATTO**
- *
- *              (III) SEGMENTATION FAULT CHECKFREEDOM() LINE 102 **FATTO**
- *
- *              (IV) FAR FARE FIGLI AD APP.C **FATTO**
- *
- *              (V) INIZIARE TAXIHANDLER **FATTO**
- *
- *              (VI) SEGMENTATION FAULT DOPO AVER INSERITO HOLES 
- *
- */
-
 

@@ -23,9 +23,6 @@
             #error "W e H NON SONO STATE DEFINITE! (-D W60 -D H20)"
     #endif
 
-    #include "key.h"
-    #include "shmLibs.h"
-
 typedef struct conf{
 
     int soTaxi;
@@ -46,5 +43,9 @@ typedef struct cell{
     int count;
 
 }cell;
+
+    #include "key.h"
+    #include "shmLibs.h"
+    #include "conf.h"
 
 #endif

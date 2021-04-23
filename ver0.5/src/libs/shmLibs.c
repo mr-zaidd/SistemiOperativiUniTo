@@ -1,4 +1,3 @@
-
 #include "../include/inc.h"
 
 int createshm(){
@@ -189,6 +188,8 @@ void printMtx(){
 
 void fillConf(conf* confg){
 
+    int i;
+    int j;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
