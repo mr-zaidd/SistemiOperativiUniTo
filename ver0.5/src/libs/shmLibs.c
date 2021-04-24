@@ -165,6 +165,7 @@ void holesHandler(int holes){
             if(free == 1){
                 insertHole(i, j);
                 holes--;
+                printf("\nHoles: %d\n", holes);
             }
         }
     }
