@@ -45,6 +45,7 @@ typedef struct cell{
 }cell;
 
     #include "key.h"
+    #include "sigLib.h"
     #include "shmLibs.h"
     #include "conf.h"
 
