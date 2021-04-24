@@ -6,7 +6,7 @@ BUILD = build/
 TMP = bin/tmp/
 EXE = bin/exe/
 
-.PHONY : rmFolder mkFolder clean compile
+.PHONY : rmFolder mkFolder clean compile shm key conf app
 
 mkFolder:
 	mkdir -p $(EXE)
