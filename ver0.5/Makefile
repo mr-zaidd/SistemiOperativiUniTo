@@ -26,7 +26,7 @@ clean:
 	mkdir -p $(EXE)
 	rm -rf $(BUILD)*
 
-compile: app
+compile: conf key shm app
 
 #taxiHandler: src/exe/taxiHandler.c src/include/mylib.h src/include/inc.h
 #	$(CC) $(CFLAGS) src/exe/taxiHandler.c build/mylib.o -o bin/exe/taxiH
@@ -37,11 +37,12 @@ compile: app
 shm: src/libs/shmLibs.c src/include/inc.h src/include/shmLibs.h
 	$(CC) $(CFLAGS) -c src/libs/shmLibs.c -o build/shmLibs.o
 
-conf: src/libs/conf.c src/include/inc.h src/include/conf.h
-	$(CC) $(CFLAGS) -c src/libs/conf.c -o build/conf.o
-
 key: src/libs/key.c src/include/inc.h src/include/key.h
 	$(CC) $(CFLAGS) -c src/libs/key.c -o build/key.o
 
-app: src/app.c src/include/inc.h shm conf key
+# QUESTA REGOLA NON VIENE VISTA DA MAKE
+conf: src/libs/conf.c src/include/inc.h src/include/conf.h
+	$(CC) $(CFLAGS) -c src/libs/conf.c -o build/conf.o
+
+app: src/app.c src/include/inc.h
 	$(CC) $(CFLAGS) src/app.c build/shmLibs.o build/conf.o build/key.o -o bin/app
