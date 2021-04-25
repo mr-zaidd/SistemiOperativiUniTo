@@ -6,7 +6,7 @@ BUILD = build/
 TMP = bin/tmp/
 EXE = bin/exe/
 
-.PHONY : rmFolder mkFolder clean compile sigLib shm key conf app
+.PHONY : rmFolder mkFolder clean compile sigLib shm key conf taxiHandler taxi app
 
 mkFolder:
 	mkdir -p $(EXE)
@@ -26,10 +26,13 @@ clean:
 	mkdir -p $(EXE)
 	rm -rf $(BUILD)*
 
-compile: conf key sigLib shm app
+compile: conf key sigLib shm taxiHandler taxi app
 
-#taxiHandler: src/exe/taxiHandler.c src/include/mylib.h src/include/inc.h
-#	$(CC) $(CFLAGS) src/exe/taxiHandler.c build/mylib.o -o bin/exe/taxiH
+taxiHandler: src/exe/taxiHandler.c src/include/inc.h
+	$(CC) $(CFLAGS) src/exe/taxiHandler.c build/shmLibs.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/taxiH
+
+taxi: src/exe/taxi.c src/include/inc.h
+	$(CC) $(CFLAGS) src/exe/taxi.c build/shmLibs.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/taxi
 
 #myLib: src/libs/mylib.c src/include/mylib.h src/include/inc.h
 #	$(CC) $(CFLAGS) -c src/libs/mylib.c -o build/mylib.o
@@ -43,7 +46,6 @@ shm: src/libs/shmLibs.c src/include/inc.h src/include/shmLibs.h
 key: src/libs/key.c src/include/inc.h src/include/key.h
 	$(CC) $(CFLAGS) -c src/libs/key.c -o build/key.o
 
-# QUESTA REGOLA NON VIENE VISTA DA MAKE
 conf: src/libs/conf.c src/include/inc.h src/include/conf.h
 	$(CC) $(CFLAGS) -c src/libs/conf.c -o build/conf.o
 

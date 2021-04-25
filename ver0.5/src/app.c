@@ -8,8 +8,8 @@ int main(){
     cell (*shmAt)[W];
     char* fileConf = "../conf/conf.csv";
     char* ch[4];
-    char* timeOut = (char*)malloc(16*sizeof(char));
-    char* dur = (char*)malloc(16*sizeof(char));
+    char* nTaxi = (char*)malloc(16*sizeof(char));
+    char* timeout = (char*)malloc(16*sizeof(char));
     conf* confg;
     pid_t figli[2];
     struct sigaction sa;
@@ -36,20 +36,21 @@ int main(){
     holesHandler(confg->soHoles);
     printMtx();
 
-    /**
-    sprintf(timeOut, "%d", confg->soTimeOut);
-    sprintf(dur, "%d", confg->soDuration);
+    sprintf(nTaxi, "%d", confg->soTaxi);
+    sprintf(timeout, "%d", confg->soTimeOut);
 
     ch[0] = "./exe/taxiH";
-    ch[1] = timeOut;
-    ch[2] = dur;
+    ch[1] = nTaxi;
+    ch[2] = timeout;
     ch[3] = NULL;
 
     if((figli[0]=fork()) == -1){
 
         perror("\nDEBUG: FORK ANDATO MALE\n");
         shmdt(shmAt);
-        removeAll(shmid);
+        deleteshm();
+        free(timeout);
+        free(nTaxi);
         free(confg);
         exit(EXIT_FAILURE);
 
@@ -57,14 +58,16 @@ int main(){
         execvp(ch[0], ch);
     }
 
-    waitpid(WAIT_ANY, NULL, 0);
-    **/
+    for(c=0; c<1; c++)
+        waitpid(WAIT_ANY, NULL, 0);
+
+    printf("\nDEBUG: MORTO TAXI\n");
 
     shmdt(shmAt);
     deleteshm();;
     free(confg);
-    free(dur);
-    free(timeOut);
+    free(timeout);
+    free(nTaxi);
     return 0;
 
 }
