@@ -1,6 +1,6 @@
 #include "../include/inc.h"
 
-static void ccHandler(){
+ void ccHandler(){
 
     char cmd[16];
     char key[8];

@@ -2,6 +2,6 @@
 
 #define SIGLIB
 
-static void ccHandler();
+ void ccHandler();
 
 #endif

@@ -13,6 +13,12 @@ int main(){
     conf* confg;
     pid_t figli[2];
     struct sigaction sa;
+
+
+    /** TEST **/
+
+    /** END TEST **/
+
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = ccHandler;
