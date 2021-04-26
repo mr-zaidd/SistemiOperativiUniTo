@@ -20,7 +20,7 @@
     #include <errno.h>
 
     #if (!defined(W) && !defined(H)) || (!defined(W) || !defined(H))
-            #error "W e H NON SONO STATE DEFINITE! (-D W60 -D H20)"
+            #error "W e H NON SONO STATE DEFINITE! (-D W=60 -D H=20)"
     #endif
 
 typedef struct conf{
