@@ -27,7 +27,7 @@ int main(){
     confg = (conf*) malloc(sizeof(conf));
     key = ftok(".", 'b');
     createKeyFile(key);
-    printf("DEBUG: READ KEY: %d\n", readKey());
+    printf("DEBUG: Verifica Chiave: %d\n", readKey());
     parseConf(confg, fileConf);
     printConf(confg);
     shmid = createshm();
@@ -61,7 +61,7 @@ int main(){
     for(c=0; c<1; c++)
         waitpid(WAIT_ANY, NULL, 0);
 
-    printf("\nDEBUG: MORTO TAXI\n");
+    printf("\nDEBUG: Morto TaxiHandler\n");
 
     shmdt(shmAt);
     deleteshm();;

@@ -12,8 +12,10 @@ int main(int argc, char* argv[]){
     ch[1] = dur;
     ch[2] = NULL;
 
-    printf("\nDEBUG: ARGC %d\n", argc);
-    printf("\nDEBUG: nTaxi %d\n", nTaxi);
+    if(argc>3)
+        /** Rise segnale per exit(1) e chiusura di HandlerSource e chiusura App **/
+
+    printf("\nDEBUG: Numero dei Taxi da generare %d\n", nTaxi);
 
     while(tmp != nTaxi){
 
@@ -27,19 +29,20 @@ int main(int argc, char* argv[]){
             printf("\nDEBUG: FIGLIO del TAXI\n");
             exit(0);
             **/
-            execvp(ch[0], ch);
+            printf("\nDEBUG: Figlio partorito da taxiHandler!\n");
+            execvp("./exe/taxi", ch);
+            perror("DEBUG EXEC:");
+            exit(1);
 
         }
         tmp++;
 
     }
 
-    printf("\nDEBUG: TMP TH: %d\n", tmp);
-
     for(c=0; c<nTaxi; c++)
         waitpid(WAIT_ANY, NULL, 0);
 
-    printf("\nDEBUG: MORTI TAXI FIGLI\n");
+    printf("\nDEBUG: Morti tutti i figli del TaxiHandler\n");
 
     free(figli);
 
