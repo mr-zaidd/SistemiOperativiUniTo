@@ -22,27 +22,52 @@ int peek(node* queue, int x, int y);
 bool isfull();
 bool isempty();
 
-bool enqueue(node* queue, int x, int y){
+bool isfull(){
+    return contatoreItem == MAX;
+}
 
+bool isempty(){
+    return contatoreItem == 0;
+}
+
+bool enqueue(node* queue, int x, int y){
     if(!isfull()){
         if(fineCoda == MAX-1)
             fineCoda = -1;
         queue[++fineCoda] -> x = x;
         queue[++fineCoda] -> y = y;
+        queue[++fineCoda] -> visited = 0;
         contatoreItem++;
     }
-
 }
 
+node dequeue(node* queue){
+    node removed;
+    removed.x = queue[inizioCoda++] -> x;
+    removed.y = queue[inizioCoda++] -> y;
+    removed.visited = queue[inizioCoda++] -> visited;
+    if(inizioCoda == MAX)
+        inizioCoda = 0;
+    contatoreItem--;
+    return removed;
+}
+
+node peek(node* queue){
+    node peeked;
+    peeked.x = queue[inizioCoda] -> x;
+    peeked.y = queue[inizioCoda] -> y;
+    peeked.visited = queue[inizioCoda] -> visited;
+    return peeked;
+}
+
+int size(){
+    return contatoreItem;
+}
 
 /** Fine Implementazione CODA **/
 
 void bfs(int startx, int starty, int endx, int endy){
 
-
-
-
-    /**
     int i;
     int rr;
     int cc;
@@ -60,7 +85,6 @@ void bfs(int startx, int starty, int endx, int endy){
             continue;
 
     }
-    **/
 
 
 }
