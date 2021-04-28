@@ -154,8 +154,8 @@ void holesHandler(int holes){
     int tmp;
     int free;
 
+    srand(time(NULL));
     while(holes != 0){
-        srand(time(NULL));
         i = rand()%(H+1);
         j = rand()%(W+1);
         tmp = checkOne(i,j);

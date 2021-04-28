@@ -3,9 +3,25 @@
 
 #define MAX 1000
 
+
+/**
+ *
+ *      Base Teorica:
+ *      + Mettiamo il nodo start nella coda
+ *      + Esploriamo i suoi vicini
+ *      + Inseriamo ogni vicino nella coda
+ *      + Marchiamo come visitato il nodo start
+ *      + Andiamo avanti nella coda
+ *
+ **/
+
+
+
+
 typedef struct node{
     int x,y;
     bool visited;
+    node* genitore; /** Per ricostruire il percorso **/
 }node;
 
 
@@ -30,22 +46,24 @@ bool isempty(){
     return contatoreItem == 0;
 }
 
-bool enqueue(node* queue, int x, int y){
+void enqueue(node* queue, int x, int y, node genitore){
     if(!isfull()){
         if(fineCoda == MAX-1)
             fineCoda = -1;
         queue[++fineCoda] -> x = x;
-        queue[++fineCoda] -> y = y;
-        queue[++fineCoda] -> visited = 0;
+        queue[fineCoda] -> y = y;
+        queue[fineCoda] -> visited = 0;
+        queue[fineCoda] -> genitore = genitore;
         contatoreItem++;
     }
 }
 
 node dequeue(node* queue){
     node removed;
-    removed.x = queue[inizioCoda++] -> x;
-    removed.y = queue[inizioCoda++] -> y;
-    removed.visited = queue[inizioCoda++] -> visited;
+    removed.x = queue[inizioCoda] -> x;
+    removed.y = queue[inizioCoda] -> y;
+    removed.visited = queue[inizioCoda] -> visited;
+    removed.genitore = queue[inizioCoda++] -> genitore;
     if(inizioCoda == MAX)
         inizioCoda = 0;
     contatoreItem--;
@@ -57,6 +75,7 @@ node peek(node* queue){
     peeked.x = queue[inizioCoda] -> x;
     peeked.y = queue[inizioCoda] -> y;
     peeked.visited = queue[inizioCoda] -> visited;
+    peeked.genitore = queue[inizioCoda] -> genitore;
     return peeked;
 }
 
