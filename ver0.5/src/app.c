@@ -1,5 +1,21 @@
 #include "include/inc.h"
 
+void printCelle(){
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    int i = 0;
+    int j = 0;
+
+    for(; i < W; i++){
+        for(; j < H; j++){
+            printf("\n###CELLA %d %d###\n", i, j);
+            printf("\nOne: %d\nCapacità: %d\nAttraversamento: %d\n", head[i][j].one, head[i][j].soCap, head[i][j].soTime);
+        }
+    }
+
+
+    shmdt(head);
+}
+
 int main(){
 
     int key;
