@@ -6,7 +6,7 @@ BUILD = build/
 TMP = bin/tmp/
 EXE = bin/exe/
 
-.PHONY : rmFolder mkFolder clean compile sigLib shm key conf taxiHandler taxi app
+.PHONY : rmFolder mkFolder clean compile sigLib shm manhattan key conf taxiHandler taxi app
 
 mkFolder:
 	mkdir -p $(EXE)
@@ -26,13 +26,16 @@ clean:
 	mkdir -p $(EXE)
 	rm -rf $(BUILD)*
 
-compile: conf key sigLib shm taxiHandler taxi app
+compile: conf key sigLib manhattan shm taxiHandler taxi app
 
 taxiHandler: src/exe/taxiHandler.c src/include/inc.h
 	$(CC) $(CFLAGS) src/exe/taxiHandler.c build/shmLibs.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/taxiH
 
 taxi: src/exe/taxi.c src/include/inc.h
-	$(CC) $(CFLAGS) src/exe/taxi.c build/shmLibs.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/taxi
+	$(CC) $(CFLAGS) src/exe/taxi.c build/shmLibs.o build/manhattan.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/taxi
+
+manhattan: src/libs/manhattan.c src/include/manhattan.h
+	$(CC) $(CFLAGS) -c src/libs/manhattan.c -o build/manhattan.o
 
 #myLib: src/libs/mylib.c src/include/mylib.h src/include/inc.h
 #	$(CC) $(CFLAGS) -c src/libs/mylib.c -o build/mylib.o

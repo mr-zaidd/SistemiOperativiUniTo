@@ -48,5 +48,6 @@ typedef struct cell{
     #include "sigLib.h"
     #include "shmLibs.h"
     #include "conf.h"
+    #include "manhattan.h"
 
 #endif
