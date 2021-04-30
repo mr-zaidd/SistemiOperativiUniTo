@@ -5,11 +5,11 @@ int main(int argc, char* argv[]){
     int dur = atoi(argv[1]);
     int i;
     int j;
-    int* x;
-    int* y;
     int tmp;
     int fals = 0;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
+
+    printf("\nDEBUG: Dur: %d\tArgc: %d\n", dur, argc);
 
     srand(time(NULL));
     while(!fals){
@@ -24,11 +24,8 @@ int main(int argc, char* argv[]){
         }
     }
 
-    *x = i;
-    *y = j;
-
     printf("\n\n### Taxi BEFORE ###");
-    printf("\n Index i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
+    printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
             i,
             j,
             head[i][j].one,
@@ -39,7 +36,7 @@ int main(int argc, char* argv[]){
     movimentoManhattan(&i, &j, 0, 0);
 
     printf("\n\n### Taxi AFTER ###");
-    printf("\n Index i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
+    printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
             i,
             j,
             head[i][j].one,

@@ -191,6 +191,7 @@ void fillConf(conf* confg){
     int i;
     int j;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    printf("\nDEBUG: W: %d\tH: %d\t Attraversamento: %d\n", W, H, confg -> soTime);
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
             head[i][j].one = 0;
