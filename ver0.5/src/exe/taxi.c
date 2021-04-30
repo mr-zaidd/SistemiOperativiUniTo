@@ -5,6 +5,8 @@ int main(int argc, char* argv[]){
     int dur = atoi(argv[1]);
     int i;
     int j;
+    int* x;
+    int* y;
     int tmp;
     int fals = 0;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
@@ -21,6 +23,9 @@ int main(int argc, char* argv[]){
             }
         }
     }
+
+    *x = i;
+    *y = j;
 
     printf("\n\n### Taxi BEFORE ###");
     printf("\n Index i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",

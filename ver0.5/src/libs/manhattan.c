@@ -5,16 +5,19 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy){
     int movimentoR = abs(*startx-endx);
     int movimentoC = abs(*starty-endy);
 
+    struct timespec tmp, tmp2;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
     printf("\nDEBUG: MOVIMENTO-R: %d\nDEBUG: MOVIMENTO-C: %d\n", movimentoR, movimentoC);
 
-    struct timespec tmp, tmp2;
-    tmp.tv_sec = 0;
+    tmp.tv_sec = 3;
     tmp.tv_nsec = head[0][0].soTime;
 
     printf("\nDEBUG: Attraversamento in manhattan: %d\n", head[*startx][*starty].soTime);
 
     for(movimentoR; movimentoR > 0; movimentoR--){
+
+        printf("\nDEBUG: Startx: %d\n", *startx);
+        fflush(stdout);
         if(*startx < endx){
             *startx++;
             nanosleep(&tmp, &tmp2);
