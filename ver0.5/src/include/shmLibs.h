@@ -13,5 +13,6 @@ int checkFreedom(int i, int j, int pos);
 int checkPosition(int i, int j);
 int checkOne(int i, int j);
 
+int randomizeNum(int shift, int max);
 
 #endif

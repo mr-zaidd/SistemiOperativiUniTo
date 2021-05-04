@@ -153,20 +153,27 @@ void holesHandler(int holes){
     int pos;
     int tmp;
     int free;
+    int shift;
 
     srand(time(NULL));
+    shift = rand();
+    printf("\nDEBUG: shift: %d", shift);
     while(holes != 0){
-        i = rand()%(H+1);
-        j = rand()%(W+1);
+        i = randomizeNum(shift, H);
+        j = randomizeNum(shift+2, W);
         tmp = checkOne(i,j);
+        printf("\nDEBUG: POSTOCCUPATA i: %d\t j: %d\t tmp: %d", i, j, tmp);
         if(tmp == 1){
             pos = checkPosition(i,j);
             free = checkFreedom(i, j, pos);
+            printf("\nDEBUG: POSTFREEDOM i: %d\t j: %d\t free: %d", i, j, free);
             if(free == 1){
                 insertHole(i, j);
+                printf("\nDEBUG: INSERITO: i: %d\tj:%d\n\n", i, j);
                 holes--;
             }
         }
+        shift = shift*2;
     }
 }
 
@@ -174,16 +181,20 @@ void printMtx(){
     int i;
     int j;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    printf("\n### MAPPA ###\n");
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
             if(head[i][j].one == 1)
                 printf("X\t");
-            else if(head[i][j].one == 0)
+            else if(head[i][j].one == 0 && head[i][j].count == 0)
                 printf(".\t");
+            else if(head[i][j].count > 0)
+                printf("%d\t", head[i][j].count);
         }
         printf("\n");
     }
     shmdt(head);
+    printf("\n### X Holes\t. Libera\t1 Percorso ###\n");
 }
 
 void fillConf(conf* confg){
@@ -195,10 +206,19 @@ void fillConf(conf* confg){
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
             head[i][j].one = 0;
-            head[i][j].soCap = confg -> soCap;
+            head[i][j].soCap = 0;
             head[i][j].soTime = confg -> soTime;
             head[i][j].count = 0;
         }
     }
     shmdt(head);
 }
+
+int randomizeNum(int shift, int max){
+
+    srand(time(NULL)*shift);
+    return (rand()%max);
+
+}
+
+

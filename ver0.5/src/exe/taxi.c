@@ -7,20 +7,21 @@ int main(int argc, char* argv[]){
     int j;
     int tmp;
     int fals = 0;
+    int shift = 30;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
 
     printf("\nDEBUG: Dur: %d\tArgc: %d\n", dur, argc);
 
-    srand(time(NULL));
     while(!fals){
-        i = rand()%(H+1);
-        j = rand()%(W+1);
+        i = randomizeNum(shift, H);
+        j = randomizeNum(shift+2, W);
         tmp = checkOne(i,j);
+        printf("\nDEBUG: I: %d\tj: %d\n", i, j);
+        printf("\nDEBUG: TMP: %d\n", tmp);
         if(tmp == 1){
-            if(head[i][j].soCap < 3){
-                ++head[i][j].soCap;
-                fals = 1;
-            }
+            head[i][j].soCap += 1;
+            head[i][j].count += 1;
+            fals = 1;
         }
     }
 
@@ -33,9 +34,13 @@ int main(int argc, char* argv[]){
             head[i][j].soTime,
             head[i][j].count);
 
-    movimentoManhattan(&i, &j, 0, 0);
+    movimentoManhattan(&i, &j, randomizeNum(20, H), randomizeNum(30, W));
 
-    printf("\n\n### Taxi AFTER ###");
+    movimentoManhattan(&i, &j, randomizeNum(25, H), randomizeNum(35, W));
+
+    movimentoManhattan(&i, &j, randomizeNum(15, H), randomizeNum(55, W));
+
+    printf("\n\n### Taxi AFTER - Dopo 3 percorsi ###");
     printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
             i,
             j,

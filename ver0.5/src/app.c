@@ -79,8 +79,10 @@ int main(){
 
     printf("\nDEBUG: Morto TaxiHandler\n");
 
+    printMtx();
+
     shmdt(shmAt);
-    deleteshm();;
+    deleteshm();
     free(confg);
     free(timeout);
     free(nTaxi);

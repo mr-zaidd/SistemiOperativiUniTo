@@ -2,8 +2,8 @@
 
 void printConf(conf* confg){
 
-    printf(
-            "\nTAXI: %d\nSOURCE: %d\nHOLES: %d\nCAPACITA: %d\nATTRAVERSAMENTO CELLA: %d\nTIMEOUT: %d\nDURATION: %d\n",
+    printf("\n### CONFIGURAZIONE:");
+    printf("\nTAXI: %d\nSOURCE: %d\nHOLES: %d\nCAPACITA: %d\nATTRAVERSAMENTO CELLA: %d\nTIMEOUT: %d\nDURATION: %d\n",
             confg -> soTaxi,
             confg -> soSources,
             confg -> soHoles,
