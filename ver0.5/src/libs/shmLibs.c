@@ -162,14 +162,11 @@ void holesHandler(int holes){
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);
         tmp = checkOne(i,j);
-        printf("\nDEBUG: POSTOCCUPATA i: %d\t j: %d\t tmp: %d", i, j, tmp);
         if(tmp == 1){
             pos = checkPosition(i,j);
             free = checkFreedom(i, j, pos);
-            printf("\nDEBUG: POSTFREEDOM i: %d\t j: %d\t free: %d", i, j, free);
             if(free == 1){
                 insertHole(i, j);
-                printf("\nDEBUG: INSERITO: i: %d\tj:%d\n\n", i, j);
                 holes--;
             }
         }
