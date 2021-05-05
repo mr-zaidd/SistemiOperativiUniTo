@@ -12,6 +12,7 @@
     #include <stdlib.h>
     #include <sys/ipc.h>
     #include <sys/shm.h>
+    #include <sys/sem.h>
     #include <sys/msg.h>
     #include <sys/wait.h>
     #include <time.h>

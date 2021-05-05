@@ -2,6 +2,6 @@
 
 #define MANH
 
-void movimentoManhattan(int* startx, int* starty, int endx, int endy);
+void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer);
 
 #endif

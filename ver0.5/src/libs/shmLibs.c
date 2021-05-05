@@ -154,6 +154,7 @@ void holesHandler(int holes){
     int tmp;
     int free;
     int shift;
+    int semid = semget(readKey(), 0, IPC_CREAT | 0666);
 
     srand(time(NULL));
     shift = rand();
@@ -167,6 +168,7 @@ void holesHandler(int holes){
             free = checkFreedom(i, j, pos);
             if(free == 1){
                 insertHole(i, j);
+                semctl(semid, (i*W+j), SETVAL, 1);
                 holes--;
             }
         }

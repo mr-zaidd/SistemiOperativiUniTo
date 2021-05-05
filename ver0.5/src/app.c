@@ -18,6 +18,8 @@ void printCelle(){
 
 int main(){
 
+    int counterZer = 0;
+
     int key;
     int shmid;
     int c;
@@ -29,11 +31,11 @@ int main(){
     conf* confg;
     pid_t figli[2];
     struct sigaction sa;
+    int semid;
+    int arrZero[W*H];
 
-
-    /** TEST **/
-
-    /** END TEST **/
+    for(counterZer; counterZer < W*H; counterZer++)
+        arrZero[counterZer] = 1;
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -47,6 +49,8 @@ int main(){
     parseConf(confg, fileConf);
     printConf(confg);
     shmid = createshm();
+    semid = semget(readKey(), W*H, IPC_CREAT | 0666);
+    semctl(semid, 0, SETALL, arrZero);
     shmAt = shmat(shmid, NULL, 0);
     fillConf(confg);
     holesHandler(confg->soHoles);
@@ -83,6 +87,7 @@ int main(){
 
     shmdt(shmAt);
     deleteshm();
+    semctl(semid, 0, IPC_RMID, 0);
     free(confg);
     free(timeout);
     free(nTaxi);
