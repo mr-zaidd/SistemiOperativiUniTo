@@ -3,9 +3,7 @@
 
 void muoriPlease(int signum, siginfo_t* info, void* context){
 
-    printf("\nDEBUG: INFOSIG_errno: %d\n", info -> si_errno);
-    printf("\nDEBUG: CONTEXT: %p\n", context);
-    printf("\nDEBUG: SEGNALE: %d\n", signum);
+    printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI per blocco su semaforo\n", signum);
     exit(33);
 
 }

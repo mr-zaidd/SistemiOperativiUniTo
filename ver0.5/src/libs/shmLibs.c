@@ -168,7 +168,8 @@ void holesHandler(int holes){
             free = checkFreedom(i, j, pos);
             if(free == 1){
                 insertHole(i, j);
-                semctl(semid, (i*W+j), SETVAL, 1);
+                printf("\nDEBUG: HOLE i: %d\tj: %d\n\n", i, j);
+                semctl(semid, (i*W+j), SETVAL, 0);
                 holes--;
             }
         }

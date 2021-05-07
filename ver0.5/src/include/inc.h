@@ -19,6 +19,7 @@
     #include <ctype.h>
     #include <signal.h>
     #include <errno.h>
+    #include <limits.h>
 
     #if (!defined(W) && !defined(H)) || (!defined(W) || !defined(H))
             #error "W e H NON SONO STATE DEFINITE! (-D W=60 -D H=20)"

@@ -42,7 +42,7 @@ int main(){
     pid_t figli[2];
     struct sigaction sa;
     int semid;
-    int arrZero[W*H] = {0};
+    int g;
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -57,8 +57,10 @@ int main(){
     printConf(confg);
     shmid = createshm();
     semid = semget(readKey(), W*H, IPC_CREAT | 0666);
-    semctl(semid, 0, SETALL, arrZero);
-    stampaStatusSem(semid);
+
+    for(g = 0; g<W*H; g++)
+        semctl(semid, g, SETVAL, 1);
+
     shmAt = shmat(shmid, NULL, 0);
     fillConf(confg);
     holesHandler(confg->soHoles);

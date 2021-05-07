@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -O2 -std=c89 -pedantic -IC -D W=10 -D H=10
+#CFLAGS = -Wall -Wextra -g -O2 -std=c89 -pedantic -IC -D W=10 -D H=10
+CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=10 -D H=10
 
 BIN = bin/
 BUILD = build/
