@@ -39,9 +39,6 @@ int main(int argc, char* argv[]){
     myop.sem_op = -1;
     semop(semid, &myop, 1);
 
-    for(c; c<10;c++)
-        sleep(1);
-
     while(!fals){
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);

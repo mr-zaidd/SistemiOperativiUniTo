@@ -9,44 +9,40 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
     long tempotot = 0;
 
     struct timespec tmp, tmp2;
-    struct timespec sem;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
     int semid = semget(readKey(), 0, IPC_CREAT | 0666);
     struct sembuf myop;
 
-    printf("\nDEBUG: Startx: %d\tStarty: %d\tEndx: %d\tEndy: %d\n", *startx, *starty, endx, endy);
+    printf("\nDEBUG: PID:%d\tStartx: %d\tStarty: %d\tEndx: %d\tEndy: %d\n",getpid(), *startx, *starty, endx, endy);
 
-    myop.sem_flg = IPC_NOWAIT;
+    myop.sem_flg = 0;
     myop.sem_op = -1;
 
 /**    printf("\nDEBUG: Prima di movimento ->\t i: %d\tj: %d\n", *startx, *starty);
     printf("\nDEBUG: INIZIO MOVIMENTO\n");
 **/
-    sem.tv_sec = timer;
-    sem.tv_nsec = 0;
+    printf("\nDEBUG: Timer Manhattan: %d\n", timer);
     tmp.tv_sec = 0;
     tmp.tv_nsec = head[0][0].soTime;
 
     for(movimentoR; movimentoR > 0; movimentoR--){
 
         myop.sem_num = (*startx)*W + (*starty);
-        printf("\nDEBUG: semNum: %d\n", myop.sem_num);
+        printf("\nDEBUG: ValoreSemaforo PRIMAs di %d: %d", getpid(), semctl(semid, myop.sem_num, GETVAL));
 
-        if(semtimedop(semid, &myop, 1, &sem) == -1){
-            printf("\nDEBUG: ERRNO: %d\t%s\n", errno, strerror(errno));
+        if(semop(semid, &myop, 1) == -1){
+            printf("\nDEBUG: ValoreSemaforo DOPOs di %d: %d", getpid(), semctl(semid, myop.sem_num, GETVAL));
             fflush(stdout);
             raise(SIGTERM);
         }else{
             head[*startx][*starty].soCap -= 1;
             myop.sem_op = 1;
-            myop.sem_flg = 0;
             semop(semid, &myop, 1);
         }
         if(*startx < endx){
             myop.sem_num = (*startx+1)*W+(*starty);
             myop.sem_op = -1;
-            myop.sem_flg = IPC_NOWAIT;
-            if(semtimedop(semid, &myop, 1, &sem) == -1)
+            if(semop(semid, &myop, 1) == -1)
                 exit(EXIT_FAILURE);
             else{
                 *startx += 1;
@@ -54,14 +50,12 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
-                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }else if(*startx > endx){
             myop.sem_num = (*startx-1)*W+(*starty);
             myop.sem_op = -1;
-            myop.sem_flg = IPC_NOWAIT;
-            if(semtimedop(semid, &myop, 1, &sem) == -1)
+            if(semop(semid, &myop, 1) == -1)
                 exit(EXIT_FAILURE);
             else{
                 *startx -= 1;
@@ -69,7 +63,6 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
-                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }
@@ -79,22 +72,19 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
     for(movimentoC; movimentoC > 0; movimentoC--){
 
         myop.sem_num = (*startx)*W + (*starty);
-        myop.sem_flg = IPC_NOWAIT;
 
-        if(semtimedop(semid, &myop, 1, &sem) == -1)
+        if(semop(semid, &myop, 1) == -1)
             exit(EXIT_FAILURE);
         else{
             head[*startx][*starty].soCap -= 1;
             myop.sem_op = 1;
-            myop.sem_flg = 0;
             semop(semid, &myop, 1);
         }
 
         if(*starty < endy){
             myop.sem_num = (*startx)*W+(*starty+1);
             myop.sem_op = -1;
-            myop.sem_flg = IPC_NOWAIT;
-            if(semtimedop(semid, &myop, 1, &sem) == -1)
+            if(semop(semid, &myop, 1) == -1)
                 exit(EXIT_FAILURE);
             else{
                 *starty += 1;
@@ -102,14 +92,12 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
-                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }else if(*starty > endy){
             myop.sem_num = (*startx)*W+(*starty-1);
             myop.sem_op = -1;
-            myop.sem_flg = IPC_NOWAIT;
-            if(semtimedop(semid, &myop, 1, &sem) == -1)
+            if(semop(semid, &myop, 1) == -1)
                 exit(EXIT_FAILURE);
             else{
                 *starty -= 1;
@@ -117,7 +105,6 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
-                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }
