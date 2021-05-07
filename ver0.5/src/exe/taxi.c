@@ -15,7 +15,6 @@ int main(int argc, char* argv[]){
     int dur = atoi(argv[1]);
     int i;
     int j;
-    int c =0;
     int tmp;
     int fals = 0;
     int shift = getpid();
@@ -64,7 +63,7 @@ int main(int argc, char* argv[]){
     myop.sem_op = 1;
     semop(semid, &myop, 1);
 
-    movimentoManhattan(&i, &j, randomizeNum(20, H), randomizeNum(30, W), dur);
+    movimentoManhattanSEC(&i, &j, randomizeNum(20, H), randomizeNum(30, W));
 
     myop.sem_op = -1;
     semop(semid, &myop, 1);
