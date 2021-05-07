@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muoriPlease;
     sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGALRM, &sa, NULL);
 
     myop.sem_num = 0;
     myop.sem_flg = 0;
@@ -62,6 +63,8 @@ int main(int argc, char* argv[]){
 
     myop.sem_op = 1;
     semop(semid, &myop, 1);
+
+    alarm(dur);
 
     movimentoManhattanSEC(&i, &j, randomizeNum(20, H), randomizeNum(30, W));
 

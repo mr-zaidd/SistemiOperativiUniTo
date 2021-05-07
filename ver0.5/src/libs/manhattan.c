@@ -69,6 +69,9 @@ void movimentoX(int* startx, int* starty, int endx){
     attr.tv_sec = 0;
     attr.tv_nsec = head[0][0].soTime;
 
+    printf("\nDEBUG: PID: %d\tMovimento Riga 1\n", getpid());
+    fflush(stdout);
+
     myop.sem_flg = 0;
     myop.sem_op = -1;
     myop.sem_num = (*startx)*W + (*starty);
@@ -79,6 +82,7 @@ void movimentoX(int* startx, int* starty, int endx){
     myop.sem_op = 1;
     semop(semid, &myop, 1);
 
+    printf("\nMovimento Riga 2\n");
 
     if(*startx < endx){
 
@@ -110,7 +114,6 @@ void movimentoX(int* startx, int* starty, int endx){
 
     }
 
-    printf("\nMovimento Riga\n");
     shmdt(head);
 
 }

@@ -16,6 +16,18 @@ void printCelle(){
     shmdt(head);
 }
 
+void stampaStatusSem(int semid){
+
+    int i = 0;
+    int val;
+    for(i; i < W*H; i++){
+        val = semctl(semid, i, GETVAL);
+        printf("\nDEBUG: Semaforo %d\tValore:%d\n", i, val);
+    }
+
+}
+
+
 int main(){
 
     int key;
@@ -46,6 +58,7 @@ int main(){
     shmid = createshm();
     semid = semget(readKey(), W*H, IPC_CREAT | 0666);
     semctl(semid, 0, SETALL, arrZero);
+    stampaStatusSem(semid);
     shmAt = shmat(shmid, NULL, 0);
     fillConf(confg);
     holesHandler(confg->soHoles);
