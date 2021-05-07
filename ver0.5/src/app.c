@@ -18,8 +18,6 @@ void printCelle(){
 
 int main(){
 
-    int counterZer = 0;
-
     int key;
     int shmid;
     int c;
@@ -32,10 +30,7 @@ int main(){
     pid_t figli[2];
     struct sigaction sa;
     int semid;
-    int arrZero[W*H];
-
-    for(counterZer; counterZer < W*H; counterZer++)
-        arrZero[counterZer] = 1;
+    int arrZero[W*H] = {0};
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -91,6 +86,7 @@ int main(){
     free(confg);
     free(timeout);
     free(nTaxi);
+
     return 0;
 
 }

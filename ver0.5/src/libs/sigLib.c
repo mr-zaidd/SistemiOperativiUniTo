@@ -17,19 +17,23 @@
     strcpy(cmd, "ipcrm -m");
     sprintf(key, "%d", getshmid());
     strcat(cmd, key);
-    system(cmd);
+    if(system(cmd) == -1){
+        printf("\nDEBUG: ID: %d Shared Memory non trovato - Non esiste\n", getshmid());
+    }
 
     strcpy(cmd2, "ipcrm -s");
     sprintf(key2, "%d", semid);
     strcat(cmd2, key2);
-    system(cmd2);
-
+    if(system(cmd2) == -1){
+        printf("\nDEBUG: ID Semaforo Mappa non trovato - Non esiste\n");
+    }
 
     strcpy(cmd3, "ipcrm -s");
     sprintf(key3, "%d", semiddds);
     strcat(cmd3, key3);
-    system(cmd3);
-
+    if(system(cmd3) == -1){
+        printf("\nDEBUG: ID Semaforo Taxi non trovato - Non esiste\n");
+    }
 
     printf("\nDEBUG: Arrivato segnale di INTERRUZIONE - shm e sems eliminati forzatamente\n");
     exit(EXIT_FAILURE);

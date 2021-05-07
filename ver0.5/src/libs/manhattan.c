@@ -14,6 +14,8 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
     int semid = semget(readKey(), 0, IPC_CREAT | 0666);
     struct sembuf myop;
 
+    printf("\nDEBUG: Startx: %d\tStarty: %d\tEndx: %d\tEndy: %d\n", *startx, *starty, endx, endy);
+
     myop.sem_flg = IPC_NOWAIT;
     myop.sem_op = -1;
 
@@ -21,7 +23,7 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
     printf("\nDEBUG: INIZIO MOVIMENTO\n");
 **/
     sem.tv_sec = timer;
-    sem.tv_sec = 0;
+    sem.tv_nsec = 0;
     tmp.tv_sec = 0;
     tmp.tv_nsec = head[0][0].soTime;
 
@@ -31,18 +33,19 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
         printf("\nDEBUG: semNum: %d\n", myop.sem_num);
 
         if(semtimedop(semid, &myop, 1, &sem) == -1){
-            printf("RAISE");
+            printf("\nDEBUG: ERRNO: %d\t%s\n", errno, strerror(errno));
             fflush(stdout);
-            exit(EXIT_FAILURE);
+            raise(SIGTERM);
         }else{
-            printf("\nDEBUG: Sono dentro il primo semaforo\n");
             head[*startx][*starty].soCap -= 1;
             myop.sem_op = 1;
+            myop.sem_flg = 0;
             semop(semid, &myop, 1);
         }
         if(*startx < endx){
             myop.sem_num = (*startx+1)*W+(*starty);
             myop.sem_op = -1;
+            myop.sem_flg = IPC_NOWAIT;
             if(semtimedop(semid, &myop, 1, &sem) == -1)
                 exit(EXIT_FAILURE);
             else{
@@ -51,11 +54,13 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
+                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }else if(*startx > endx){
             myop.sem_num = (*startx-1)*W+(*starty);
             myop.sem_op = -1;
+            myop.sem_flg = IPC_NOWAIT;
             if(semtimedop(semid, &myop, 1, &sem) == -1)
                 exit(EXIT_FAILURE);
             else{
@@ -64,6 +69,7 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
+                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }
@@ -73,18 +79,21 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
     for(movimentoC; movimentoC > 0; movimentoC--){
 
         myop.sem_num = (*startx)*W + (*starty);
+        myop.sem_flg = IPC_NOWAIT;
 
         if(semtimedop(semid, &myop, 1, &sem) == -1)
             exit(EXIT_FAILURE);
         else{
             head[*startx][*starty].soCap -= 1;
             myop.sem_op = 1;
+            myop.sem_flg = 0;
             semop(semid, &myop, 1);
         }
 
         if(*starty < endy){
             myop.sem_num = (*startx)*W+(*starty+1);
             myop.sem_op = -1;
+            myop.sem_flg = IPC_NOWAIT;
             if(semtimedop(semid, &myop, 1, &sem) == -1)
                 exit(EXIT_FAILURE);
             else{
@@ -93,11 +102,13 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
+                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }else if(*starty > endy){
             myop.sem_num = (*startx)*W+(*starty-1);
             myop.sem_op = -1;
+            myop.sem_flg = IPC_NOWAIT;
             if(semtimedop(semid, &myop, 1, &sem) == -1)
                 exit(EXIT_FAILURE);
             else{
@@ -106,6 +117,7 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy, int timer)
                 head[*startx][*starty].soCap += 1;
                 nanosleep(&tmp, &tmp2);
                 myop.sem_op = 1;
+                myop.sem_flg = 0;
                 semop(semid, &myop, 1);
             }
         }
