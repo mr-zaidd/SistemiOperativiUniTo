@@ -207,6 +207,7 @@ void fillConf(conf* confg){
         for(j = 0; j < W; j++){
             head[i][j].one = 0;
             head[i][j].soCap = 0;
+            head[i][j].soCapMax = confg -> soCap;
             head[i][j].soTime = confg -> soTime;
             head[i][j].count = 0;
         }

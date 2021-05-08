@@ -15,6 +15,11 @@ void movimentoY(int* startx, int* starty, int endy){
     myop.sem_op = -1;
     myop.sem_num = (*startx)*W + (*starty);
 
+    if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax && semctl(semid, myop.sem_num, GETVAL) == 0){
+        head[*startx][*starty].soCap -= 1;
+        semctl(semid, myop.sem_num, SETVAL, 1);
+    }
+
     semop(semid, &myop, 1);
 
     head[*startx][*starty].soCap -= 1;
@@ -33,8 +38,12 @@ void movimentoY(int* startx, int* starty, int endy){
         head[*startx][*starty].count += 1;
         nanosleep(&attr, &arr);
 
-        myop.sem_op = +1;
-        semop(semid, &myop, 1);
+        if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
+            semctl(semid, myop.sem_num, SETVAL, 0);
+        }else{
+            myop.sem_op = +1;
+            semop(semid, &myop, 1);
+        }
 
     }else{
 
@@ -47,16 +56,18 @@ void movimentoY(int* startx, int* starty, int endy){
         head[*startx][*starty].count += 1;
         nanosleep(&attr, &arr);
 
-        myop.sem_op = +1;
-        semop(semid, &myop, 1);
+        if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
+            semctl(semid, myop.sem_num, SETVAL, 0);
+        }else{
+            myop.sem_op = +1;
+            semop(semid, &myop, 1);
+        }
 
     }
 
     shmdt(head);
 
 }
-
-
 
 void movimentoX(int* startx, int* starty, int endx){
 
@@ -71,6 +82,11 @@ void movimentoX(int* startx, int* starty, int endx){
     myop.sem_flg = 0;
     myop.sem_op = -1;
     myop.sem_num = (*startx)*W + (*starty);
+
+    if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax && semctl(semid, myop.sem_num, GETVAL) == 0){
+        head[*startx][*starty].soCap -= 1;
+        semctl(semid, myop.sem_num, SETVAL, 1);
+    }
 
     semop(semid, &myop, 1);
     head[*startx][*starty].soCap -= 1;
@@ -89,8 +105,12 @@ void movimentoX(int* startx, int* starty, int endx){
         head[*startx][*starty].count += 1;
         nanosleep(&attr, &arr);
 
-        myop.sem_op = +1;
-        semop(semid, &myop, 1);
+        if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
+            semctl(semid, myop.sem_num, SETVAL, 0);
+        }else{
+            myop.sem_op = +1;
+            semop(semid, &myop, 1);
+        }
 
     }else{
 
@@ -103,8 +123,12 @@ void movimentoX(int* startx, int* starty, int endx){
         head[*startx][*starty].count += 1;
         nanosleep(&attr, &arr);
 
-        myop.sem_op = +1;
-        semop(semid, &myop, 1);
+        if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
+            semctl(semid, myop.sem_num, SETVAL, 0);
+        }else{
+            myop.sem_op = +1;
+            semop(semid, &myop, 1);
+        }
 
     }
 

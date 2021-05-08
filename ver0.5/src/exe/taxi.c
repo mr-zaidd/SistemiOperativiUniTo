@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
 
     alarm(dur);
 
-    movimentoManhattanSEC(&i, &j, randomizeNum(20, H), randomizeNum(30, W));
+    movimentoManhattanSEC(&i, &j, randomizeNum(getpid(), H), randomizeNum(getpid()+2, W));
 
     myop.sem_op = -1;
     semop(semid, &myop, 1);

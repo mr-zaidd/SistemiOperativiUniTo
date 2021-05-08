@@ -95,6 +95,8 @@ int main(){
 
     printMtx();
 
+    stampaStatusSem(semid);
+
     shmdt(shmAt);
     deleteshm();
     semctl(semid, 0, IPC_RMID, 0);

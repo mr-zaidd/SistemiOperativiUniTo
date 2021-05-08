@@ -40,6 +40,7 @@ typedef struct conf{
 typedef struct cell{
 
     int one;
+    int soCapMax;
     int soCap;
     int soTime;
     int count;
