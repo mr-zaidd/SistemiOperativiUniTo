@@ -168,7 +168,7 @@ void holesHandler(int holes){
             free = checkFreedom(i, j, pos);
             if(free == 1){
                 insertHole(i, j);
-                printf("\nDEBUG: HOLE i: %d\tj: %d\n\n", i, j);
+                printf("\nDEBUG: Hole inserito i: %d\tj: %d\n", i, j);
                 semctl(semid, (i*W+j), SETVAL, 0);
                 holes--;
             }
@@ -184,7 +184,9 @@ void printMtx(){
     printf("\n### MAPPA ###\n");
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
-            if(head[i][j].one == 1)
+            if(head[i][j].source == 1 && head[i][j].one == 0){
+                printf("S  ");
+            }else if(head[i][j].one == 1)
                 printf("X  ");
             else if(head[i][j].one == 0 && head[i][j].count == 0)
                 printf(".  ");
@@ -209,6 +211,7 @@ void fillConf(conf* confg){
             head[i][j].soCap = 0;
             head[i][j].soCapMax = confg -> soCap;
             head[i][j].soTime = confg -> soTime;
+            head[i][j].source = 0;
             head[i][j].count = 0;
         }
     }

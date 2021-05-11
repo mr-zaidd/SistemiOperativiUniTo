@@ -1,13 +1,13 @@
 CC = gcc
-#CFLAGS = -Wall -Wextra -g -O2 -std=c89 -pedantic -IC -D W=10 -D H=10
-CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=50 -D H=50
+CFLAGS = -Wall -Wextra -g -O2 -std=c89 -pedantic -IC -D W=10 -D H=10
+#CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=50 -D H=50
 
 BIN = bin/
 BUILD = build/
 TMP = bin/tmp/
 EXE = bin/exe/
 
-.PHONY : rmFolder mkFolder clean compile sigLib shm manhattan key conf taxiHandler taxi app
+.PHONY : rmFolder mkFolder clean compile sigLib shm manhattan key conf sourcesHandler source richiesta taxiHandler taxi app
 
 mkFolder:
 	mkdir -p $(EXE)
@@ -27,7 +27,16 @@ clean:
 	mkdir -p $(EXE)
 	rm -rf $(BUILD)*
 
-compile: conf key sigLib manhattan shm taxiHandler taxi app
+compile: conf key sigLib manhattan shm sourcesHandler source richiesta taxiHandler taxi app
+
+sourcesHandler: src/exe/sourcesHandler.c src/include/inc.h
+	$(CC) $(CFLAGS) src/exe/sourcesHandler.c build/shmLibs.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/sourceH
+
+source: src/exe/source.c src/include/inc.h
+	$(CC) $(CFLAGS) src/exe/source.c build/shmLibs.o build/manhattan.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/source
+
+richiesta: src/exe/richiesta.c src/include/inc.h
+	$(CC) $(CFLAGS) src/exe/richiesta.c build/shmLibs.o build/manhattan.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/richiesta
 
 taxiHandler: src/exe/taxiHandler.c src/include/inc.h
 	$(CC) $(CFLAGS) src/exe/taxiHandler.c build/shmLibs.o build/conf.o build/sigLib.o  build/key.o -o bin/exe/taxiH
@@ -37,9 +46,6 @@ taxi: src/exe/taxi.c src/include/inc.h
 
 manhattan: src/libs/manhattan.c src/include/manhattan.h
 	$(CC) $(CFLAGS) -c src/libs/manhattan.c -o build/manhattan.o
-
-#myLib: src/libs/mylib.c src/include/mylib.h src/include/inc.h
-#	$(CC) $(CFLAGS) -c src/libs/mylib.c -o build/mylib.o
 
 sigLib: src/libs/sigLib.c src/include/inc.h src/include/sigLib.h
 	$(CC) $(CFLAGS) -c src/libs/sigLib.c -o build/sigLib.o

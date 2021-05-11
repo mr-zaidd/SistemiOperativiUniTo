@@ -19,8 +19,11 @@ int main(int argc, char* argv[]){
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
     struct sembuf myop;
     struct sigaction sa;
+    int msgid = msgget(MKEY, IPC_CREAT | 0666);
+    mex ricezione;
+    int msglength = sizeof(int)*4 + sizeof(pid_t);
 
-    int semid = semget(17, 1, IPC_CREAT | 0666);
+    int semid = semget(TKEY, 1, IPC_CREAT | 0666);
 /**
     printf("\nDEBUG: Dur: %d\tArgc: %d\n", dur, argc);
 **/
@@ -64,7 +67,13 @@ int main(int argc, char* argv[]){
 
     alarm(dur);
 
-    movimentoManhattanSEC(&i, &j, randomizeNum(getpid()*2, H), randomizeNum(getpid()*3, W));
+    msgrcv(msgid, &ricezione, msglength, INVIO, 0);
+
+    printf("\nDEBUG: mi: %d\tmj: %d\tmx: %d\tmy: %d\n", ricezione.mi, ricezione.mj, ricezione.mx, ricezione.my);
+
+    movimentoManhattanSEC(&i, &j, ricezione.mi, ricezione.mj);
+    movimentoManhattanSEC(&i, &j, ricezione.mx, ricezione.my);
+
 /**
     movimentoManhattanSEC(&i, &j, 8, 32);
 **/

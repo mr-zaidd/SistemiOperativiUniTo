@@ -43,14 +43,32 @@ typedef struct cell{
     int soCapMax;
     int soCap;
     int soTime;
+    int source;
     int count;
 
 }cell;
+
+typedef struct mex{
+
+    long mtype;
+    int mi;
+    int mj;
+    int mx;
+    int my;
+    pid_t pidRic;
+
+}mex;
 
     #include "key.h"
     #include "sigLib.h"
     #include "shmLibs.h"
     #include "conf.h"
     #include "manhattan.h"
+
+#define TKEY 0x11
+#define SKEY 0x1B
+#define MKEY 0x5E
+
+#define INVIO 50
 
 #endif

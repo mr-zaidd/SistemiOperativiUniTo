@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 
     printf("\nDEBUG: Numero dei Taxi da generare %d\n", nTaxi);
 
-    semid = semget(17, 1, IPC_CREAT | 0666);
+    semid = semget(TKEY, 1, IPC_CREAT | 0666);
     semctl(semid, 0, SETVAL, 1);
 
     while(tmp != nTaxi){

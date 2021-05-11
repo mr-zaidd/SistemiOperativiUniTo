@@ -36,8 +36,10 @@ int main(){
     cell (*shmAt)[W];
     char* fileConf = "../conf/conf.csv";
     char* ch[4];
+    char* sCh[3];
     char* nTaxi = (char*)malloc(16*sizeof(char));
     char* timeout = (char*)malloc(16*sizeof(char));
+    char* nSources = (char*)malloc(16*sizeof(char));
     conf* confg;
     pid_t figli[2];
     struct sigaction sa;
@@ -66,6 +68,7 @@ int main(){
     holesHandler(confg->soHoles);
     printMtx();
 
+    sprintf(nSources, "%d", confg->soSources);
     sprintf(nTaxi, "%d", confg->soTaxi);
     sprintf(timeout, "%d", confg->soTimeOut);
 
@@ -73,6 +76,10 @@ int main(){
     ch[1] = nTaxi;
     ch[2] = timeout;
     ch[3] = NULL;
+
+    sCh[0] = "./exe/sourceH";
+    sCh[1] = nSources;
+    sCh[2] = NULL;
 
     if((figli[0]=fork()) == -1){
 
@@ -88,7 +95,22 @@ int main(){
         execvp(ch[0], ch);
     }
 
-    for(c=0; c<1; c++)
+    if((figli[1]=fork()) == -1){
+
+        perror("\nDEBUG: FORK ANDATO MALE\n");
+        shmdt(shmAt);
+        deleteshm();
+        free(timeout);
+        free(nTaxi);
+        free(confg);
+        exit(EXIT_FAILURE);
+
+    }else if(figli[1] == 0){
+        printf("\nPartorito Source: %d\n", getpid());
+        execvp(sCh[0], sCh);
+    }
+
+    for(c=0; c<2; c++)
         waitpid(WAIT_ANY, NULL, 0);
 
     printf("\nDEBUG: Morto TaxiHandler\n");
