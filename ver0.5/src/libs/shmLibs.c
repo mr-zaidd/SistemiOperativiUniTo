@@ -158,7 +158,6 @@ void holesHandler(int holes){
 
     srand(time(NULL));
     shift = rand();
-    printf("\nDEBUG: shift: %d", shift);
     while(holes != 0){
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);
@@ -168,7 +167,6 @@ void holesHandler(int holes){
             free = checkFreedom(i, j, pos);
             if(free == 1){
                 insertHole(i, j);
-                printf("\nDEBUG: Hole inserito i: %d\tj: %d\n", i, j);
                 semctl(semid, (i*W+j), SETVAL, 0);
                 holes--;
             }
@@ -204,7 +202,6 @@ void fillConf(conf* confg){
     int i;
     int j;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
-    printf("\nDEBUG: W: %d\tH: %d\t Attraversamento: %d\n", W, H, confg -> soTime);
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
             head[i][j].one = 0;

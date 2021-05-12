@@ -19,7 +19,7 @@ int main(int argc, char* argv[]){
     int msgid = msgget(MKEY, IPC_CREAT | 0666);
     struct sigaction sa;
     mex invio;
-    int shift = randomizeNum(3,100);
+    int shift = randomizeNum(randomizeNum(4,getpid()),100);
     size_t inviolength;
 
     sa.sa_flags = SA_SIGINFO;
@@ -31,15 +31,10 @@ int main(int argc, char* argv[]){
     invio.arrivi[0] = i;
     invio.arrivi[1] = j;
     invio.arrivi[2] = randomizeNum(getpid()*shift, H);
-    invio.arrivi[3] = randomizeNum(getpid()*shift, W);
+    invio.arrivi[3] = randomizeNum(getpid()*shift+2, W);
     invio.pidRic = getpid();
 
     inviolength = sizeof(invio.arrivi) + sizeof(pid_t);
-
-    for(; c < 4; c++){
-        printf("\nDEBUG: Arrivi: %d\n", invio.arrivi[c]);
-        fflush(stdout);
-    }
 
     if((msgsnd(msgid, &invio, inviolength, IPC_NOWAIT)) < 0){
 

@@ -3,7 +3,7 @@
 
 void muoriPlease(int signum, siginfo_t* info, void* context){
 
-    printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo\n", signum, getpid());
+    printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());
     exit(33);
 
 }
@@ -70,8 +70,6 @@ int main(int argc, char* argv[]){
     while(1){
 
         msgrcv(msgid, &ricezione, msglength, INVIO, 0);
-
-        printf("\nDEBUG: mi: %d\tmj: %d\tmx: %d\tmy: %d\n", ricezione.arrivi[0], ricezione.arrivi[1], ricezione.arrivi[2], ricezione.arrivi[3]);
 
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);

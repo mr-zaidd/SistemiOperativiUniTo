@@ -72,9 +72,6 @@ int main(){
     ch[2] = indexy;
     ch[3] = NULL;
 
-    printf("\nDEBUG: INDEXI: %s\t INDEXY: %s\n", ch[1], ch[2]);
-    fflush(stdout);
-
     count = 0;
 
     if((figli[count] = fork()) == -1){
