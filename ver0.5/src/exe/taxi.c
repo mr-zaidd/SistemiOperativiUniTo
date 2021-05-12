@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
     struct sigaction sa;
     int msgid = msgget(MKEY, IPC_CREAT | 0666);
     mex ricezione;
-    int msglength = sizeof(int)*4 + sizeof(pid_t);
+    int msglength = 4*sizeof(int) + sizeof(pid_t);
 
     int semid = semget(TKEY, 1, IPC_CREAT | 0666);
 /**
@@ -67,30 +67,36 @@ int main(int argc, char* argv[]){
 
     alarm(dur);
 
-    msgrcv(msgid, &ricezione, msglength, INVIO, 0);
+    while(1){
 
-    printf("\nDEBUG: mi: %d\tmj: %d\tmx: %d\tmy: %d\n", ricezione.mi, ricezione.mj, ricezione.mx, ricezione.my);
+        msgrcv(msgid, &ricezione, msglength, INVIO, 0);
 
-    movimentoManhattanSEC(&i, &j, ricezione.mi, ricezione.mj);
-    movimentoManhattanSEC(&i, &j, ricezione.mx, ricezione.my);
+        printf("\nDEBUG: mi: %d\tmj: %d\tmx: %d\tmy: %d\n", ricezione.arrivi[0], ricezione.arrivi[1], ricezione.arrivi[2], ricezione.arrivi[3]);
 
-/**
-    movimentoManhattanSEC(&i, &j, 8, 32);
-**/
-    myop.sem_op = -1;
-    semop(semid, &myop, 1);
+        movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
+        movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);
 
-    printf("\n\n### Taxi %d AFTER ###", getpid());
-    printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
-            i,
-            j,
-            head[i][j].one,
-            head[i][j].soCap,
-            head[i][j].soTime,
-            head[i][j].count);
+        kill(ricezione.pidRic, SIGTERM);
 
-    myop.sem_op = 1;
-    semop(semid, &myop, 1);
+    /**
+        movimentoManhattanSEC(&i, &j, 8, 32);
+    **/
+        myop.sem_op = -1;
+        semop(semid, &myop, 1);
+
+        printf("\n\n### Taxi %d AFTER ###", getpid());
+        printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
+                i,
+                j,
+                head[i][j].one,
+                head[i][j].soCap,
+                head[i][j].soTime,
+                head[i][j].count);
+
+        myop.sem_op = 1;
+        semop(semid, &myop, 1);
+
+    }
 
    shmdt(head);
    return 0;

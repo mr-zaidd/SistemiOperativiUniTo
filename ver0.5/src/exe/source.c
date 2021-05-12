@@ -2,10 +2,17 @@
 
 
 char* ch[4];
+int count;
+pid_t* figli;
 
 void dieAndMore(int signum, siginfo_t* info, void* context){
     if(signum == 10){
-        execvp(ch[0], ch);
+        if((figli[count] = fork()) == -1){
+            printf("\nDEBUG: RICHIESTA fallita\n");
+        }else if(figli[count] == 0){
+            execvp(ch[0], ch);
+        }
+        count++;
     }else{
         printf("\nDEBUG: Signal: %d\n", signum);
         exit(33);
@@ -13,6 +20,8 @@ void dieAndMore(int signum, siginfo_t* info, void* context){
 }
 
 int main(){
+
+    figli = (pid_t*)malloc(sizeof(pid_t)*1000);
 
     int i;
     int j;
@@ -31,9 +40,11 @@ int main(){
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = dieAndMore;
     sigaction(SIGALRM, &sa, NULL);
+    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 
-    up.tv_sec = 0;
-    up.tv_nsec = 500000000;
+    up.tv_sec = 5;
+    up.tv_nsec = 0;
 
     myop.sem_num = 0;
     myop.sem_flg = 0;
@@ -56,14 +67,30 @@ int main(){
     sprintf(indexi, "%d", i);
     sprintf(indexy, "%d", j);
 
-    ch[0] = "./richiesta";
+    ch[0] = "./exe/richiesta";
     ch[1] = indexi;
     ch[2] = indexy;
     ch[3] = NULL;
 
+    printf("\nDEBUG: INDEXI: %s\t INDEXY: %s\n", ch[1], ch[2]);
+    fflush(stdout);
+
+    count = 0;
+
+    if((figli[count] = fork()) == -1){
+        printf("\nDEBUG: RICHIESTA non generata");
+    }else if(figli[count] == 0){
+        execvp("./exe/richiesta", ch);
+    }
+    count++;
+
+    alarm(4);
+
     while(1){
+
         nanosleep(&up, &up2);
         raise(SIGUSR1);
+
     }
 
     return 0;

@@ -51,10 +51,7 @@ typedef struct cell{
 typedef struct mex{
 
     long mtype;
-    int mi;
-    int mj;
-    int mx;
-    int my;
+    int arrivi[4];
     pid_t pidRic;
 
 }mex;

@@ -8,13 +8,18 @@ int main(int argc, char* argv[]){
     int semid;
     int msgid;
     char* ch[3];
-    ch[0] = "./source";
+    ch[0] = "./exe/source";
     ch[1] = NULL;
 
     semid = semget(SKEY, 1, IPC_CREAT | 0666);
     semctl(semid, 0, SETVAL, 1);
 
     msgid = msgget(MKEY, IPC_CREAT | 0666);
+
+    if(msgid == -1){
+        printf("\nDEBUG: ");
+        perror(strerror(errno));
+    }
 
     while(counter != nSources){
 
@@ -24,10 +29,7 @@ int main(int argc, char* argv[]){
 
         }else if(figli[counter] == 0){
 
-            printf("\nDEBUG: Source partorita da SourceHandler! PID: %d\n", getpid());
             execvp("./exe/source", ch);
-            perror(strerror(errno));
-            exit(33);
         }
 
         counter++;
@@ -38,6 +40,7 @@ int main(int argc, char* argv[]){
         waitpid(WAIT_ANY, NULL, 0);
 
     printf("\nDEBUG: Morti tutti i fligi di SourcesHandler\n");
+
 
     semctl(semid, 0, IPC_RMID, 0);
     msgctl(msgid, IPC_RMID, NULL);

@@ -11,7 +11,15 @@
 
     char cmd3[16];
     char key3[8];
-    int semiddds = semget(17, 0, IPC_CREAT | 0666);
+    int semidS = semget(SKEY, 0, IPC_CREAT | 0666);
+
+    char cmd4[16];
+    char key4[8];
+    int semidT = semget(TKEY, 0, IPC_CREAT | 0666);
+
+    char cmd5[16];
+    char key5[8];
+    int msgid = msgget(MKEY, IPC_CREAT | 0666);
 
 
     strcpy(cmd, "ipcrm -m");
@@ -29,11 +37,30 @@
     }
 
     strcpy(cmd3, "ipcrm -s");
-    sprintf(key3, "%d", semiddds);
+    sprintf(key3, "%d", semidS);
     strcat(cmd3, key3);
     if(system(cmd3) == -1){
         printf("\nDEBUG: ID Semaforo Taxi non trovato - Non esiste\n");
     }
+
+
+    strcpy(cmd4, "ipcrm -s");
+    sprintf(key4, "%d", semidT);
+    strcat(cmd4, key4);
+    if(system(cmd4) == -1){
+        printf("\nDEBUG: ID non trovato - Non esiste\n");
+    }
+
+    strcpy(cmd5, "ipcrm -q");
+    sprintf(key5, "%d", msgid);
+    strcat(cmd5, key5);
+    if(system(cmd5) == -1){
+        printf("\nDEBUG: ID non trovato - Non esiste\n");
+    }
+
+
+
+
 
     printf("\nDEBUG: Arrivato segnale di INTERRUZIONE - shm e sems eliminati forzatamente\n");
     exit(EXIT_FAILURE);

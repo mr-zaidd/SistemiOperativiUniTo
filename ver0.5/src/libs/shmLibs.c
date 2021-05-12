@@ -185,13 +185,13 @@ void printMtx(){
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
             if(head[i][j].source == 1 && head[i][j].one == 0){
-                printf("S  ");
+                printf("S   ");
             }else if(head[i][j].one == 1)
-                printf("X  ");
+                printf("X   ");
             else if(head[i][j].one == 0 && head[i][j].count == 0)
-                printf(".  ");
+                printf(".   ");
             else if(head[i][j].count > 0)
-                printf("%d  ", head[i][j].count);
+                printf("%d   ", head[i][j].count);
         }
         printf("\n");
     }
