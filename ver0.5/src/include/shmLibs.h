@@ -15,4 +15,6 @@ int checkOne(int i, int j);
 
 int randomizeNum(int shift, int max);
 
+void clearAll();
+
 #endif

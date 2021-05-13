@@ -1,5 +1,14 @@
 #include "../include/inc.h"
 
+void muoio(int signum, siginfo_t* info, void* context){
+
+    if(signum == SIGTERM){
+        kill(0, SIGTERM);
+        exit(EXIT_SUCCESS);
+    }
+
+}
+
 int main(int argc, char* argv[]){
 
     int nSources = atoi(argv[1]);
@@ -8,8 +17,14 @@ int main(int argc, char* argv[]){
     int semid;
     int msgid;
     char* ch[3];
+    struct sigaction sa;
     ch[0] = "./exe/source";
     ch[1] = NULL;
+
+    sa.sa_flags = SA_SIGINFO;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_sigaction = muoio;
+    sigaction(SIGTERM, &sa, NULL);
 
     semid = semget(SKEY, 1, IPC_CREAT | 0666);
     semctl(semid, 0, SETVAL, 1);

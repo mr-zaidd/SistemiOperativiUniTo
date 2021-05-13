@@ -38,7 +38,16 @@ void deleteshm(){
         }else
             printf("\nSHM ELIMINATA\n");
     }else{
-        perror("\nAttachments alla shm\n");
+        char cmd[16];
+        char key[8];
+        printf("\nDEBUG: SHM con attachments\n");
+        printf("\nDEBUG: SHM ELIMINATA\n");
+        strcpy(cmd, "ipcrm -m");
+        sprintf(key, "%d", getshmid());
+        strcat(cmd, key);
+        if(system(cmd) == -1){
+            printf("\nDEBUG: ID: %d Shared Memory non trovato - Non esiste\n", getshmid());
+        }
     }
 
 }
@@ -222,4 +231,21 @@ int randomizeNum(int shift, int max){
 
 }
 
+
+void clearAll(){
+
+    int tkey = semget(TKEY, 0, 0666);
+    int skey = semget(SKEY, 0, 0666);
+    int mkey = msgget(MKEY, 0666);
+    int semid = semget(readKey(), 0, 0666);
+    int semidapp = semget(APPKEY, 0, 0666);
+
+    deleteshm();
+    semctl(semid, 0, IPC_RMID, 0);
+    semctl(skey, 0, IPC_RMID, 0);
+    semctl(tkey, 0, IPC_RMID, 0);
+    semctl(semidapp, 0, IPC_RMID, 0);
+    msgctl(mkey, IPC_RMID, NULL);
+
+}
 

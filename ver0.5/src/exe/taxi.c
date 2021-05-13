@@ -1,11 +1,12 @@
 #include "../include/inc.h"
 
-
 void muoriPlease(int signum, siginfo_t* info, void* context){
-
-    printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());
-    exit(33);
-
+    if(signum == SIGTERM){
+        exit(EXIT_SUCCESS);
+    }else{
+        printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());
+        exit(33);
+    }
 }
 
 int main(int argc, char* argv[]){
@@ -15,15 +16,20 @@ int main(int argc, char* argv[]){
     int j;
     int tmp;
     int fals = 0;
-    int shift = getpid();
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
+    int shift = getpid();
     struct sembuf myop;
+    struct sembuf myopapp;
     struct sigaction sa;
     int msgid = msgget(MKEY, IPC_CREAT | 0666);
     mex ricezione;
     int msglength = 4*sizeof(int) + sizeof(pid_t);
-
     int semid = semget(TKEY, 1, IPC_CREAT | 0666);
+    int semidapp = semget(APPKEY, 1, 0666);
+
+    myopapp.sem_num = 0;
+    myopapp.sem_flg = 0;
+    myopapp.sem_op = 0;
 /**
     printf("\nDEBUG: Dur: %d\tArgc: %d\n", dur, argc);
 **/
@@ -64,6 +70,8 @@ int main(int argc, char* argv[]){
 
     myop.sem_op = 1;
     semop(semid, &myop, 1);
+
+    semop(semidapp, &myopapp, 1);
 
     alarm(dur);
 

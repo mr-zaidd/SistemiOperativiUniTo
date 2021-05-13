@@ -1,5 +1,5 @@
 #include "include/inc.h"
-
+/**
 void printCelle(){
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
     int i = 0;
@@ -11,8 +11,6 @@ void printCelle(){
             printf("\nOne: %d\nCapacità: %d\nAttraversamento: %d\n", head[i][j].one, head[i][j].soCap, head[i][j].soTime);
         }
     }
-
-
     shmdt(head);
 }
 
@@ -24,32 +22,41 @@ void stampaStatusSem(int semid){
         val = semctl(semid, i, GETVAL);
         printf("\nDEBUG: Semaforo %d\tValore:%d\n", i, val);
     }
-
 }
-
+**/
 
 int main(){
 
+
+    char* nTaxi;
+    char* nSources;
+    conf* confg;
+    char* timeout;
+    cell (*shmAt)[W];
     int key;
     int shmid;
+    int semidapp;
+    int semid;
     int c;
-    cell (*shmAt)[W];
     char* fileConf = "../conf/conf.csv";
     char* ch[4];
     char* sCh[3];
-    char* nTaxi = (char*)malloc(16*sizeof(char));
-    char* timeout = (char*)malloc(16*sizeof(char));
-    char* nSources = (char*)malloc(16*sizeof(char));
-    conf* confg;
     pid_t figli[2];
     struct sigaction sa;
-    int semid;
     int g;
+
+    nTaxi = (char*)malloc(16*sizeof(char));
+    timeout = (char*)malloc(16*sizeof(char));
+    nSources = (char*)malloc(16*sizeof(char));
+
+    semidapp = semget(APPKEY, 1, IPC_CREAT | 0666);
+    semctl(semidapp, 0, SETVAL, 1);
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = ccHandler;
     sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGALRM, &sa, NULL);
 
     confg = (conf*) malloc(sizeof(conf));
     key = ftok(".", 'b');
@@ -88,6 +95,7 @@ int main(){
         deleteshm();
         free(timeout);
         free(nTaxi);
+        free(nSources);
         free(confg);
         exit(EXIT_FAILURE);
 
@@ -102,6 +110,7 @@ int main(){
         deleteshm();
         free(timeout);
         free(nTaxi);
+        free(nSources);
         free(confg);
         exit(EXIT_FAILURE);
 
@@ -110,19 +119,19 @@ int main(){
         execvp(sCh[0], sCh);
     }
 
-    for(c=0; c<2; c++)
-        waitpid(WAIT_ANY, NULL, 0);
-
-    printf("\nDEBUG: Morto TaxiHandler\n");
-
-    printMtx();
+    semctl(semidapp, 0, SETVAL, 0);
 
     shmdt(shmAt);
-    deleteshm();
-    semctl(semid, 0, IPC_RMID, 0);
-    free(confg);
     free(timeout);
     free(nTaxi);
+    free(nSources);
+
+    alarm(confg->soDuration);
+
+    free(confg);
+
+    for(c=0; c<2; c++)
+        waitpid(WAIT_ANY, NULL, 0);
 
     return 0;
 

@@ -65,6 +65,7 @@ typedef struct mex{
 #define TKEY 0x11
 #define SKEY 0x1B
 #define MKEY 0x5E
+#define APPKEY 0x7B
 
 #define INVIO 50
 

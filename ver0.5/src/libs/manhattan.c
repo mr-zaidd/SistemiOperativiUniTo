@@ -138,8 +138,6 @@ void movimentoManhattanSEC(int* startx, int* starty, int endx, int endy){
     int movimentoR = abs(*startx-endx);
     int movimentoC = abs(*starty-endy);
 
-    printf("\n\nDEBUG: Startx: %d\tStarty: %d\tEndx: %d\tEndy: %d\n\n", *startx, *starty, endx, endy);
-
     for(movimentoR; movimentoR > 0; movimentoR--){
 
         movimentoX(startx, starty, endx);

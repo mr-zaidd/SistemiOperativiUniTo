@@ -1,14 +1,50 @@
 #include "../include/inc.h"
 
+int semid;
+pid_t* figli;
+char* ch[3];
+int c;
+
+void createAgain(int signum, siginfo_t* info, void* context){
+
+    if(signum == SIGUSR1){
+        if((figli[c] = fork()) == -1){
+            printf("Taxi %d non generato", figli[c]);
+        }else if(figli[c] == 0){
+            /**
+            printf("\nDEBUG: FIGLIO del TAXI\n");
+            exit(0);
+            **/
+            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
+            execvp("./exe/taxi", ch);
+            perror("DEBUG EXEC:");
+            exit(1);
+
+        }
+    }else if(signum == SIGTERM){
+        kill(0, SIGTERM);
+        exit(EXIT_SUCCESS);
+    }
+}
+
+
+
 int main(int argc, char* argv[]){
 
     int nTaxi = atoi(argv[1]);
     char* dur = argv[2];
-    pid_t* figli = (pid_t*)malloc(nTaxi*sizeof(pid_t));
     int tmp = 0;
-    int semid;
-    int c;
-    char* ch[3];
+    struct sigaction sa;
+    pid_t killed;
+
+    sa.sa_flags = SA_SIGINFO;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_sigaction = createAgain;
+    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
+
+    figli = (pid_t*)malloc(nTaxi*sizeof(pid_t));
+
     ch[0] = "./taxi";
     ch[1] = dur;
     ch[2] = NULL;
@@ -43,8 +79,20 @@ int main(int argc, char* argv[]){
 
     }
 
+    while(1){
+        killed = waitpid(WAIT_ANY, NULL, 0);
+        for(c = 0; c < nTaxi; c++){
+            if(killed == figli[c]){
+                raise(SIGUSR1);
+                break;
+            }
+        }
+    }
+
+/**
     for(c=0; c<nTaxi; c++)
         waitpid(WAIT_ANY, NULL, 0);
+**/
 
     printf("\nDEBUG: Morti tutti i figli del TaxiHandler\n");
     semctl(semid, 0, IPC_RMID, 0);
