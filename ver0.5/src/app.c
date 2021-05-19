@@ -44,6 +44,8 @@ int main(){
     pid_t figli[2];
     struct sigaction sa;
     int g;
+    int outshmid;
+    int outsemid;
 
     nTaxi = (char*)malloc(16*sizeof(char));
     timeout = (char*)malloc(16*sizeof(char));
@@ -57,6 +59,13 @@ int main(){
     sa.sa_sigaction = ccHandler;
     sigaction(SIGINT, &sa, NULL);
     sigaction(SIGALRM, &sa, NULL);
+
+
+    /** OUTPUT **/
+    outshmid = shmget(OUTPUT_KEY, sizeof(out), IPC_CREAT | 0666);
+    outsemid = semget(OUTPUT_KEY, 1, IPC_CREAT | 0666);
+    semctl(outsemid, 0, SETVAL, 1);
+
 
     confg = (conf*) malloc(sizeof(conf));
     key = ftok(".", 'b');
@@ -115,7 +124,7 @@ int main(){
         exit(EXIT_FAILURE);
 
     }else if(figli[1] == 0){
-        printf("\nPartorito Source: %d\n", getpid());
+        /**printf("\nPartorito Source: %d\n", getpid());**/
         execvp(sCh[0], sCh);
     }
 

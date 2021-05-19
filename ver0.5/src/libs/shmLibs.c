@@ -249,3 +249,15 @@ void clearAll(){
 
 }
 
+int inevasi(){
+
+    int msgid = msgget(MKEY, 0666);
+    struct msqid_buf buf;
+    int msglength = 4*sizeof(int) + sizeof(pid_t);
+    msgctl(msgid, IPC_STAT, &buf);
+    if(buf.msg_num == 0)
+        return 0;
+    else
+        return buf.msg_num;
+
+}

@@ -14,12 +14,9 @@ void createAgain(int signum, siginfo_t* info, void* context){
             /**
             printf("\nDEBUG: FIGLIO del TAXI\n");
             exit(0);
-            **/
             printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
+            **/
             execvp("./exe/taxi", ch);
-            perror("DEBUG EXEC:");
-            exit(1);
-
         }
     }else if(signum == SIGTERM){
         kill(0, SIGTERM);
@@ -68,11 +65,9 @@ int main(int argc, char* argv[]){
             /**
             printf("\nDEBUG: FIGLIO del TAXI\n");
             exit(0);
-            **/
             printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
+            **/
             execvp("./exe/taxi", ch);
-            perror("DEBUG EXEC:");
-            exit(1);
 
         }
         tmp++;
@@ -84,7 +79,7 @@ int main(int argc, char* argv[]){
         for(c = 0; c < nTaxi; c++){
             if(killed == figli[c]){
                 raise(SIGUSR1);
-                break;
+                /**break;**/
             }
         }
     }

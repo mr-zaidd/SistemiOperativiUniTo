@@ -56,6 +56,17 @@ typedef struct mex{
 
 }mex;
 
+typedef struct out{
+
+    int successi;
+    int inevasi;
+    int abortiti;
+    pid_t taxiStrada;
+    pid_t taxiTempo;
+    pid_t taxiStaccanovista
+
+}out;
+
     #include "key.h"
     #include "sigLib.h"
     #include "shmLibs.h"
@@ -68,5 +79,7 @@ typedef struct mex{
 #define APPKEY 0x7B
 
 #define INVIO 50
+
+#define OUTPUT_KEY 0x2A
 
 #endif
