@@ -5,6 +5,7 @@
      if(signum == SIGALRM){
          printf("\nSTO MORENDO ORA.\n");
          printMtx();
+         printStats();
          clearAll();
          kill(0, SIGTERM);
      }else if(signum == SIGINT){
@@ -31,6 +32,19 @@
         char cmd6[16];
         char key6[8];
         int semidApp = semget(APPKEY, 0, IPC_CREAT | 0666);
+
+
+
+        char cmd7[16];
+        char key7[8];
+        int shmidOut = shmget(OUTPUT_KEY, 0, IPC_CREAT | 0666);
+
+        char cmd8[16];
+        char key8[8];
+        int semidOut = semget(OUTPUT_KEY, 0, IPC_CREAT | 0666);
+
+
+
 
         strcpy(cmd, "ipcrm -m");
         sprintf(key, "%d", getshmid());
@@ -74,6 +88,27 @@
         if(system(cmd6) == -1){
             printf("\nDEBUG: ID non trovato - Non esiste\n");
         }
+
+
+
+
+        strcpy(cmd7, "ipcrm -m");
+        sprintf(key7, "%d", shmidOut);
+        strcat(cmd7, key7);
+        if(system(cmd7) == -1){
+            printf("\nDEBUG: ID Semaforo Mappa non trovato - Non esiste\n");
+        }
+
+        strcpy(cmd8, "ipcrm -s");
+        sprintf(key8, "%d", semidOut);
+        strcat(cmd8, key8);
+        if(system(cmd8) == -1){
+            printf("\nDEBUG: ID Semaforo Taxi non trovato - Non esiste\n");
+        }
+
+
+
+
 
         kill(0, SIGTERM);
 

@@ -35,7 +35,7 @@ int main(){
     cell (*shmAt)[W];
     int key;
     int shmid;
-    int semidapp;
+    int semidapp; /** WAIT 0 semaphore **/
     int semid;
     int c;
     char* fileConf = "../conf/conf.csv";
@@ -46,6 +46,7 @@ int main(){
     int g;
     int outshmid;
     int outsemid;
+    out* output;
 
     nTaxi = (char*)malloc(16*sizeof(char));
     timeout = (char*)malloc(16*sizeof(char));
@@ -66,6 +67,15 @@ int main(){
     outsemid = semget(OUTPUT_KEY, 1, IPC_CREAT | 0666);
     semctl(outsemid, 0, SETVAL, 1);
 
+    output = shmat(outshmid, NULL, 0);
+    output -> successi = 0;
+    output -> inevasi = 0;
+    output -> abortiti = 0;
+    output -> taxiStrada = (pid_t)0;
+    output -> taxiTempo = (pid_t)0;
+    output -> taxiStaccanovista = (pid_t)0;
+
+    shmdt(output);
 
     confg = (conf*) malloc(sizeof(conf));
     key = ftok(".", 'b');
@@ -127,9 +137,9 @@ int main(){
         /**printf("\nPartorito Source: %d\n", getpid());**/
         execvp(sCh[0], sCh);
     }
-
+/**
     semctl(semidapp, 0, SETVAL, 0);
-
+**/
     shmdt(shmAt);
     free(timeout);
     free(nTaxi);

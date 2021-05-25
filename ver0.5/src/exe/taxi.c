@@ -1,10 +1,15 @@
 #include "../include/inc.h"
 
+pid_t richiesta;
+
+
 void muoriPlease(int signum, siginfo_t* info, void* context){
     if(signum == SIGTERM){
+        kill(richiesta, SIGUSR2);
         exit(EXIT_SUCCESS);
-    }else{
-        printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());
+    }else if(signum == SIGALRM){
+        kill(richiesta, SIGUSR2);
+        /**printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
         exit(33);
     }
 }
@@ -30,9 +35,6 @@ int main(int argc, char* argv[]){
     myopapp.sem_num = 0;
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
-/**
-    printf("\nDEBUG: Dur: %d\tArgc: %d\n", dur, argc);
-**/
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -44,7 +46,7 @@ int main(int argc, char* argv[]){
     myop.sem_flg = 0;
 
     myop.sem_op = -1;
-    semop(semid, &myop, 1);
+/**    semop(semid, &myop, 1);**/
 
     while(!fals){
         i = randomizeNum(shift, H);
@@ -59,7 +61,7 @@ int main(int argc, char* argv[]){
         }
     }
 
-    printf("\n\n### Taxi %d BEFORE ###", getpid());
+/**    printf("\n\n### Taxi %d BEFORE ###", getpid());
     printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
             i,
             j,
@@ -68,9 +70,11 @@ int main(int argc, char* argv[]){
             head[i][j].soTime,
             head[i][j].count);
 
+    fflush(stdout);
+
     myop.sem_op = 1;
     semop(semid, &myop, 1);
-
+**/
     semop(semidapp, &myopapp, 1);
 
     alarm(dur);
@@ -79,16 +83,15 @@ int main(int argc, char* argv[]){
 
         msgrcv(msgid, &ricezione, msglength, INVIO, 0);
 
+        richiesta = ricezione.pidRic;
+
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);
 
-        kill(ricezione.pidRic, SIGTERM);
+        kill(ricezione.pidRic, SIGUSR1);
 
-    /**
-        movimentoManhattanSEC(&i, &j, 8, 32);
-    **/
         myop.sem_op = -1;
-        semop(semid, &myop, 1);
+/**        semop(semid, &myop, 1);
 
         printf("\n\n### Taxi %d AFTER ###", getpid());
         printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
@@ -99,9 +102,11 @@ int main(int argc, char* argv[]){
                 head[i][j].soTime,
                 head[i][j].count);
 
+        fflush(stdout);
+
         myop.sem_op = 1;
         semop(semid, &myop, 1);
-
+**/
     }
 
    shmdt(head);

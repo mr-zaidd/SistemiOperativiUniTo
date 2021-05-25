@@ -239,8 +239,12 @@ void clearAll(){
     int mkey = msgget(MKEY, 0666);
     int semid = semget(readKey(), 0, 0666);
     int semidapp = semget(APPKEY, 0, 0666);
+    int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
+    int semidOut = semget(OUTPUT_KEY, 0, 0666);
 
     deleteshm();
+    shmctl(shmidOut, IPC_RMID, NULL);
+    semctl(semidOut, 0, IPC_RMID, 0);
     semctl(semid, 0, IPC_RMID, 0);
     semctl(skey, 0, IPC_RMID, 0);
     semctl(tkey, 0, IPC_RMID, 0);
@@ -252,12 +256,33 @@ void clearAll(){
 int inevasi(){
 
     int msgid = msgget(MKEY, 0666);
-    struct msqid_buf buf;
+    struct msqid_ds buf;
     int msglength = 4*sizeof(int) + sizeof(pid_t);
     msgctl(msgid, IPC_STAT, &buf);
-    if(buf.msg_num == 0)
+    if(buf.msg_qnum == 0)
         return 0;
     else
-        return buf.msg_num;
+        return buf.msg_qnum;
 
 }
+
+void printStats(){
+
+    int outid = shmget(OUTPUT_KEY, 0, 0666);
+    out* output = shmat(outid, NULL, 0);
+
+    output -> inevasi = inevasi();
+    printf("\n## STATISTICHE: ##\n");
+    printf("\nSuccessi: %d\nInevasi: %d\nAbortiti: %d\nTaxi con più Strada: %ld\nTaxi tempo per richiesta: %ld\nTaxiStaccanovista: %ld\n",
+            output->successi,
+            output->inevasi,
+            output->abortiti,
+            (long)output->taxiStrada,
+            (long)output->taxiTempo,
+            (long)output->taxiStaccanovista);
+
+    shmdt(output);
+
+}
+
+

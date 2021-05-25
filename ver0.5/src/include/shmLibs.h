@@ -17,4 +17,8 @@ int randomizeNum(int shift, int max);
 
 void clearAll();
 
+int inevasi();
+
+void printStats();
+
 #endif

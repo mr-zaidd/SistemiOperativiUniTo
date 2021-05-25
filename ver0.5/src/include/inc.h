@@ -63,7 +63,7 @@ typedef struct out{
     int abortiti;
     pid_t taxiStrada;
     pid_t taxiTempo;
-    pid_t taxiStaccanovista
+    pid_t taxiStaccanovista;
 
 }out;
 

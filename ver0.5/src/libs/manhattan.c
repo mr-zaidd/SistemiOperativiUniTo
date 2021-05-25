@@ -15,6 +15,9 @@ void movimentoY(int* startx, int* starty, int endy){
     myop.sem_op = -1;
     myop.sem_num = (*startx)*W + (*starty);
 
+
+    nanosleep(&attr, &arr);
+
     if((head[*startx][*starty].soCap == head[*startx][*starty].soCapMax) && semctl(semid, myop.sem_num, GETVAL) == 0){
         head[*startx][*starty].soCap -= 1;
         semctl(semid, myop.sem_num, SETVAL, 1);
@@ -34,7 +37,6 @@ void movimentoY(int* startx, int* starty, int endy){
         *starty += 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
-        nanosleep(&attr, &arr);
 
         if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
             semctl(semid, myop.sem_num, SETVAL, 0);
@@ -52,8 +54,8 @@ void movimentoY(int* startx, int* starty, int endy){
         *starty -= 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
-        nanosleep(&attr, &arr);
-
+        /**nanosleep(&attr, &arr);
+**/
         if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
             semctl(semid, myop.sem_num, SETVAL, 0);
         }else{
@@ -81,6 +83,9 @@ void movimentoX(int* startx, int* starty, int endx){
     myop.sem_op = -1;
     myop.sem_num = (*startx)*W + (*starty);
 
+
+    nanosleep(&attr, &arr);
+
     if((head[*startx][*starty].soCap == head[*startx][*starty].soCapMax) && semctl(semid, myop.sem_num, GETVAL) == 0){
         head[*startx][*starty].soCap -= 1;
         semctl(semid, myop.sem_num, SETVAL, 1);
@@ -100,7 +105,6 @@ void movimentoX(int* startx, int* starty, int endx){
         *startx += 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
-        nanosleep(&attr, &arr);
 
         if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
             semctl(semid, myop.sem_num, SETVAL, 0);
@@ -118,8 +122,8 @@ void movimentoX(int* startx, int* starty, int endx){
         *startx -= 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
-        nanosleep(&attr, &arr);
-
+/**        nanosleep(&attr, &arr);
+**/
         if(head[*startx][*starty].soCap == head[*startx][*starty].soCapMax){
             semctl(semid, myop.sem_num, SETVAL, 0);
         }else{

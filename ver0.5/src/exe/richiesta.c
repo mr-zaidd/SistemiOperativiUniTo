@@ -2,15 +2,42 @@
 
 void muori(int signum, siginfo_t* info, void* context){
 
+    int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
+    out* output;
+    int semidOut = semget(OUTPUT_KEY, 1, 0666);
+    struct sembuf myop;
+    myop.sem_num = 0;
+    myop.sem_flg = 0;
+    myop.sem_op = -1;
+
     if(signum == SIGTERM){
         exit(EXIT_SUCCESS);
     }else if(signum == SIGUSR1){
+
         printf("\nDEBUG: Richiesta completata\n");
         fflush(stdout);
-        exit(EXIT_SUCCESS);
-    }else{
+        semop(semidOut, &myop, 1);
 
-        printf("\nDEBUG: SIGNUM RICHIESTA: %d\n", signum);
+        output = shmat(shmidOut , NULL, 0);
+        output -> successi = output->successi + 1;
+
+        myop.sem_op = 1;
+        semop(semidOut, &myop, 1);
+       exit(EXIT_SUCCESS);
+    }else if(signum == SIGUSR2){
+
+        printf("\nDEBUG: SIGNAL ERROR: %d\n", info->si_errno);
+
+        semop(semidOut, &myop, 1);
+
+        output = shmat(shmidOut , NULL, 0);
+        output -> abortiti = output->abortiti + 1;
+
+        myop.sem_op = 1;
+        semop(semidOut, &myop, 1);
+
+        printf("\nDEBUG: RICHIESTA ABORTITA: %d\n", signum);
+        fflush(stdout);
         exit(33);
     }
 
@@ -30,6 +57,9 @@ int main(int argc, char* argv[]){
     int semidapp = semget(APPKEY, 1, 0666);
     struct sembuf myopapp;
 
+    int signalW;
+    sigset_t setW;
+
     myopapp.sem_num = 0;
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
@@ -37,6 +67,7 @@ int main(int argc, char* argv[]){
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muori;
+    sigaction(SIGUSR2, &sa, NULL);
     sigaction(SIGUSR1, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
 
@@ -51,11 +82,16 @@ int main(int argc, char* argv[]){
 
     semop(semidapp, &myopapp, 1);
 
+    msgsnd(msgid, &invio, inviolength, 0);
+/**
     if((msgsnd(msgid, &invio, inviolength, IPC_NOWAIT)) < 0){
 
         printf("\nDEBUG: Messaggio non inviato da PID: %d\n", getpid());
 
     }
+**/
+    sigwait(&setW, &signalW);
+    printf("\nDEBUG: Sono dopo il SIGWAIT\n");
 
     return 0;
 

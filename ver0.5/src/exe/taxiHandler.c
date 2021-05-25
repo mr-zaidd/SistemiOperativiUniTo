@@ -13,9 +13,8 @@ void createAgain(int signum, siginfo_t* info, void* context){
         }else if(figli[c] == 0){
             /**
             printf("\nDEBUG: FIGLIO del TAXI\n");
-            exit(0);
+            exit(0);**/
             printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
-            **/
             execvp("./exe/taxi", ch);
         }
     }else if(signum == SIGTERM){
@@ -33,6 +32,7 @@ int main(int argc, char* argv[]){
     int tmp = 0;
     struct sigaction sa;
     pid_t killed;
+    int semidapp = semget(APPKEY, 1, IPC_CREAT | 0666);
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -65,14 +65,20 @@ int main(int argc, char* argv[]){
             /**
             printf("\nDEBUG: FIGLIO del TAXI\n");
             exit(0);
-            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
             **/
+            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
             execvp("./exe/taxi", ch);
 
         }
-        tmp++;
+        ++tmp;
 
     }
+
+
+
+    semctl(semidapp, 0, SETVAL, 0);
+
+
 
     while(1){
         killed = waitpid(WAIT_ANY, NULL, 0);

@@ -6,7 +6,15 @@ int count;
 pid_t* figli;
 
 void dieAndMore(int signum, siginfo_t* info, void* context){
-    if(signum == 10){
+
+    struct timespec up, up2;
+    up.tv_sec = 4;
+    up.tv_nsec = 0;
+
+    if(signum == SIGUSR1){
+        /**nanosleep(&up, &up2);**/
+        printf("\nDEBUG: Sto partorendo una richiesta\n");
+        fflush(stdout);
         if((figli[count] = fork()) == -1){
             printf("\nDEBUG: RICHIESTA fallita\n");
         }else if(figli[count] == 0){
@@ -44,7 +52,7 @@ int main(){
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
 
-    figli = (pid_t*)malloc(sizeof(pid_t)*1000);
+    figli = (pid_t*)malloc(sizeof(pid_t)*100000);
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -74,7 +82,6 @@ int main(){
     myop.sem_op = 1;
     semop(semid, &myop, 1);
 
-    semop(semidapp, &myopapp, 1);
 
     sprintf(indexi, "%d", i);
     sprintf(indexy, "%d", j);
@@ -86,15 +93,19 @@ int main(){
 
     count = 0;
 
+
+    semop(semidapp, &myopapp, 1);
+
+
+/**
     if((figli[count] = fork()) == -1){
         printf("\nDEBUG: RICHIESTA non generata");
     }else if(figli[count] == 0){
         execvp("./exe/richiesta", ch);
     }
     count++;
-
+**/
     while(1){
-
         nanosleep(&up, &up2);
         raise(SIGUSR1);
 
