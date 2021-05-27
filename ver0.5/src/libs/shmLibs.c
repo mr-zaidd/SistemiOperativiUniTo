@@ -190,6 +190,7 @@ void printMtx(){
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
     printf("\n### MAPPA ###\n");
     for(i = 0; i < H; i++){
+        printf("%d\t", i);
         for(j = 0; j < W; j++){
             if(head[i][j].source == 1 && head[i][j].one == 0){
                 printf("S   ");
@@ -259,10 +260,7 @@ int inevasi(){
     struct msqid_ds buf;
     int msglength = 4*sizeof(int) + sizeof(pid_t);
     msgctl(msgid, IPC_STAT, &buf);
-    if(buf.msg_qnum == 0)
-        return 0;
-    else
-        return buf.msg_qnum;
+    return buf.msg_qnum;
 
 }
 

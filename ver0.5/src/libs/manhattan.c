@@ -34,7 +34,7 @@ void movimentoY(int* startx, int* starty, int endy){
         myop.sem_op = -1;
         semop(semid, &myop, 1);
 
-        *starty += 1;
+        *starty = (*starty) + 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
 
@@ -51,7 +51,7 @@ void movimentoY(int* startx, int* starty, int endy){
         myop.sem_op = -1;
         semop(semid, &myop, 1);
 
-        *starty -= 1;
+        *starty = (*starty) - 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
         /**nanosleep(&attr, &arr);
@@ -98,11 +98,11 @@ void movimentoX(int* startx, int* starty, int endx){
 
     if(*startx < endx){
 
-        myop.sem_num = (*startx+1)*W + (*starty);
+        myop.sem_num = ((*startx)+1)*W + (*starty);
         myop.sem_op = -1;
         semop(semid, &myop, 1);
 
-        *startx += 1;
+        *startx = (*startx) + 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
 
@@ -119,7 +119,7 @@ void movimentoX(int* startx, int* starty, int endx){
         myop.sem_op = -1;
         semop(semid, &myop, 1);
 
-        *startx -= 1;
+        *startx = (*startx) - 1;
         head[*startx][*starty].soCap += 1;
         head[*startx][*starty].count += 1;
 /**        nanosleep(&attr, &arr);
@@ -155,6 +155,10 @@ void movimentoManhattanSEC(int* startx, int* starty, int endx, int endy){
     }
 
 }
+
+/**
+ * ALGO NON USATO
+
 void movimentoManhattan(int* startx, int* starty, int endx, int endy){
 
     int movimentoR = abs(*startx-endx);
@@ -208,4 +212,4 @@ void movimentoManhattan(int* startx, int* starty, int endx, int endy){
     shmdt(head);
 
 }
-
+**/

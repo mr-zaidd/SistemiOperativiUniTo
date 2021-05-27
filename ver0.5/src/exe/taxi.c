@@ -5,12 +5,17 @@ pid_t richiesta;
 
 void muoriPlease(int signum, siginfo_t* info, void* context){
     if(signum == SIGTERM){
-        kill(richiesta, SIGUSR2);
+        /**kill(richiesta, SIGTERM);**/
         exit(EXIT_SUCCESS);
     }else if(signum == SIGALRM){
         kill(richiesta, SIGUSR2);
         /**printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
         exit(33);
+    }else if(signum == SIGUSR1){
+        if(kill(richiesta, SIGPIPE) == 0)
+            write(STDOUT_FILENO, "\nDEBUG: Inviato segnale SIGUSR1 a richiesta\n", 45);
+        else
+            write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 KILL NON ANDATA BENE\n", 37);
     }
 }
 
@@ -36,11 +41,14 @@ int main(int argc, char* argv[]){
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
 
-    sa.sa_flags = SA_SIGINFO;
+    sa.sa_flags = SA_SIGINFO | SA_NODEFER;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muoriPlease;
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGALRM, &sa, NULL);
+    sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGPIPE, &sa, NULL);
+
 
     myop.sem_num = 0;
     myop.sem_flg = 0;
@@ -82,13 +90,22 @@ int main(int argc, char* argv[]){
     while(1){
 
         msgrcv(msgid, &ricezione, msglength, INVIO, 0);
+        printf("\nDEBUG: Richiesta presa in incarico\tpi: %d\tpy: %d\ti: %d\tj: %d\tx: %d\ty: %d\tPidRichiesta: %d\n",
+                i,
+                j,
+                ricezione.arrivi[0],
+                ricezione.arrivi[1],
+                ricezione.arrivi[2],
+                ricezione.arrivi[3],
+                (int)ricezione.pidRic);
+        fflush(stdout);
 
         richiesta = ricezione.pidRic;
 
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);
 
-        kill(ricezione.pidRic, SIGUSR1);
+        kill(richiesta, SIGPIPE);
 
         myop.sem_op = -1;
 /**        semop(semid, &myop, 1);

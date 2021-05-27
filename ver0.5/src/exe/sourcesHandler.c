@@ -1,8 +1,16 @@
 #include "../include/inc.h"
 
+
+pid_t* figli;
+int semid;
+int msgid;
+
 void muoio(int signum, siginfo_t* info, void* context){
 
     if(signum == SIGTERM){
+        semctl(semid, 0, IPC_RMID, 0);
+        /**msgctl(msgid, IPC_RMID, NULL);**/
+        free(figli);
         kill(0, SIGTERM);
         exit(EXIT_SUCCESS);
     }
@@ -12,14 +20,13 @@ void muoio(int signum, siginfo_t* info, void* context){
 int main(int argc, char* argv[]){
 
     int nSources = atoi(argv[1]);
-    pid_t* figli = (pid_t*)malloc(nSources*sizeof(pid_t));
     int counter = 0;
-    int semid;
-    int msgid;
     char* ch[3];
     struct sigaction sa;
     ch[0] = "./exe/source";
     ch[1] = NULL;
+
+    figli = (pid_t*)malloc(nSources*sizeof(pid_t));
 
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
@@ -53,13 +60,6 @@ int main(int argc, char* argv[]){
 
     for(counter = 0; counter < nSources; counter++)
         waitpid(WAIT_ANY, NULL, 0);
-
-    printf("\nDEBUG: Morti tutti i fligi di SourcesHandler\n");
-
-
-    semctl(semid, 0, IPC_RMID, 0);
-    msgctl(msgid, IPC_RMID, NULL);
-    free(figli);
 
     return 0;
 

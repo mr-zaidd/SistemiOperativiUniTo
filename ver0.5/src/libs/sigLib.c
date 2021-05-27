@@ -3,11 +3,11 @@
  void ccHandler(int signum, siginfo_t* info, void* context){
 
      if(signum == SIGALRM){
-         printf("\nSTO MORENDO ORA.\n");
+         write(STDOUT_FILENO,"\nSTO MORENDO ORA.\n", 18);
+         kill(0, SIGTERM);
          printMtx();
          printStats();
          clearAll();
-         kill(0, SIGTERM);
      }else if(signum == SIGINT){
 
         char cmd[16];
@@ -114,7 +114,7 @@
 
         printf("\nDEBUG: Arrivato segnale di INTERRUZIONE - shm e sems eliminati forzatamente\n");
         exit(EXIT_FAILURE);
-    }
-
+    }else if(signum == SIGTERM)
+        ;;
 }
 

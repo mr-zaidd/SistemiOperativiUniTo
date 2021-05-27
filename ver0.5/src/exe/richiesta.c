@@ -1,5 +1,7 @@
 #include "../include/inc.h"
 
+#define signalErr(s,m) if((s) == -1) {perror(m); exit(errno);}
+
 void muori(int signum, siginfo_t* info, void* context){
 
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
@@ -12,10 +14,8 @@ void muori(int signum, siginfo_t* info, void* context){
 
     if(signum == SIGTERM){
         exit(EXIT_SUCCESS);
-    }else if(signum == SIGUSR1){
-
-        printf("\nDEBUG: Richiesta completata\n");
-        fflush(stdout);
+    }else if(signum == SIGPIPE){
+        write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 ricevuto da richiesta\n", 38);
         semop(semidOut, &myop, 1);
 
         output = shmat(shmidOut , NULL, 0);
@@ -23,10 +23,11 @@ void muori(int signum, siginfo_t* info, void* context){
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
-       exit(EXIT_SUCCESS);
-    }else if(signum == SIGUSR2){
 
-        printf("\nDEBUG: SIGNAL ERROR: %d\n", info->si_errno);
+        write(STDOUT_FILENO, "\nDEBUG: RICHIESTA COMPLETATA\n", 30);
+
+        exit(EXIT_SUCCESS);
+    }else if(signum == SIGUSR2){
 
         semop(semidOut, &myop, 1);
 
@@ -36,11 +37,9 @@ void muori(int signum, siginfo_t* info, void* context){
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
 
-        printf("\nDEBUG: RICHIESTA ABORTITA: %d\n", signum);
-        fflush(stdout);
+        write(STDOUT_FILENO, "\nDEBUG: RICHIESTA ABORTITA\n", 28);
         exit(33);
     }
-
 }
 
 int main(int argc, char* argv[]){
@@ -64,12 +63,13 @@ int main(int argc, char* argv[]){
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
 
-    sa.sa_flags = SA_SIGINFO;
+    sa.sa_flags = SA_SIGINFO | SA_NODEFER;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muori;
-    sigaction(SIGUSR2, &sa, NULL);
     sigaction(SIGUSR1, &sa, NULL);
+    sigaction(SIGUSR2, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGPIPE, &sa, NULL);
 
     invio.mtype = INVIO;
     invio.arrivi[0] = i;
@@ -83,16 +83,18 @@ int main(int argc, char* argv[]){
     semop(semidapp, &myopapp, 1);
 
     msgsnd(msgid, &invio, inviolength, 0);
+    printf("\nDEBUG: pidRICHIESTA: %d\n", getpid());
+    fflush(stdout);
 /**
     if((msgsnd(msgid, &invio, inviolength, IPC_NOWAIT)) < 0){
 
         printf("\nDEBUG: Messaggio non inviato da PID: %d\n", getpid());
 
     }
-**/
     sigwait(&setW, &signalW);
-    printf("\nDEBUG: Sono dopo il SIGWAIT\n");
 
+**/
+    pause();
     return 0;
 
 }
