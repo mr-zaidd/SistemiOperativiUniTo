@@ -142,6 +142,14 @@ void movimentoManhattanSEC(int* startx, int* starty, int endx, int endy){
     int movimentoR = abs(*startx-endx);
     int movimentoC = abs(*starty-endy);
 
+    int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
+    out* output;
+    int semidOut = semget(OUTPUT_KEY, 1, 0666);
+    struct sembuf myop;
+    myop.sem_num = 0;
+    myop.sem_flg = 0;
+    myop.sem_op = -1;
+
     for(movimentoR; movimentoR > 0; movimentoR--){
 
         movimentoX(startx, starty, endx);
@@ -153,6 +161,18 @@ void movimentoManhattanSEC(int* startx, int* starty, int endx, int endy){
         movimentoY(startx, starty, endy);
 
     }
+
+    semop(semidOut, &myop, 1);
+
+    output = shmat(shmidOut , NULL, 0);
+    output -> stradaTaxi  = movimentoR + movimentoC;
+    shmdt(output);
+
+    myop.sem_op = 1;
+    semop(semidOut, &myop, 1);
+
+
+
 
 }
 

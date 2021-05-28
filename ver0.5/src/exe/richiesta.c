@@ -2,7 +2,7 @@
 
 #define signalErr(s,m) if((s) == -1) {perror(m); exit(errno);}
 
-void muori(int signum, siginfo_t* info, void* context){
+void muori(int signum){
 
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
     out* output;
@@ -24,7 +24,7 @@ void muori(int signum, siginfo_t* info, void* context){
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
 
-        write(STDOUT_FILENO, "\nDEBUG: RICHIESTA COMPLETATA\n", 30);
+        write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 39);
 
         exit(EXIT_SUCCESS);
     }else if(signum == SIGUSR2){
@@ -63,10 +63,9 @@ int main(int argc, char* argv[]){
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
 
-    sa.sa_flags = SA_SIGINFO | SA_NODEFER;
+    sa.sa_flags = SA_NODEFER;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muori;
-    sigaction(SIGUSR1, &sa, NULL);
     sigaction(SIGUSR2, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGPIPE, &sa, NULL);

@@ -62,8 +62,11 @@ typedef struct out{
     int inevasi;
     int abortiti;
     pid_t taxiStrada;
+    int stradaTaxi;
     pid_t taxiTempo;
+    int tempoTaxi;
     pid_t taxiStaccanovista;
+    int staccanovistaTaxi;
 
 }out;
 

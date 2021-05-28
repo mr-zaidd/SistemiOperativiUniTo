@@ -12,7 +12,7 @@ void muoriPlease(int signum, siginfo_t* info, void* context){
         /**printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
         exit(33);
     }else if(signum == SIGUSR1){
-        if(kill(richiesta, SIGPIPE) == 0)
+        if(kill(richiesta, SIGUSR1) == 0)
             write(STDOUT_FILENO, "\nDEBUG: Inviato segnale SIGUSR1 a richiesta\n", 45);
         else
             write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 KILL NON ANDATA BENE\n", 37);
@@ -46,7 +46,6 @@ int main(int argc, char* argv[]){
     sa.sa_sigaction = muoriPlease;
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGALRM, &sa, NULL);
-    sigaction(SIGUSR1, &sa, NULL);
     sigaction(SIGPIPE, &sa, NULL);
 
 

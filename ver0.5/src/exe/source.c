@@ -4,6 +4,7 @@
 char* ch[4];
 int count;
 pid_t* figli;
+cell (*head)[W];
 
 void dieAndMore(int signum, siginfo_t* info, void* context){
 
@@ -41,9 +42,10 @@ int main(){
     int semid = semget(SKEY, 1, IPC_CREAT | 0666);
     char* indexi = (char*)malloc(16*sizeof(char));
     char* indexy = (char*)malloc(16*sizeof(char));
-    cell (*head)[W] = shmat(getshmid(), NULL, 0);
     int semidapp = semget(APPKEY, 1, 0666);
     struct sembuf myopapp;
+
+    head = shmat(getshmid(), NULL, 0);
 
     myopapp.sem_num = 0;
     myopapp.sem_flg = 0;

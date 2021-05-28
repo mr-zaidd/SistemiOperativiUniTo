@@ -62,7 +62,6 @@
         sigaction(SIGALRM, &sa, NULL);
         sigaction(SIGTERM, &sa, NULL);
 
-
         /** OUTPUT **/
         outshmid = shmget(OUTPUT_KEY, sizeof(out), IPC_CREAT | 0666);
         outsemid = semget(OUTPUT_KEY, 1, IPC_CREAT | 0666);
@@ -86,6 +85,15 @@
         printConf(confg);
         shmid = createshm();
         semid = semget(readKey(), W*H, IPC_CREAT | 0666);
+
+
+
+        printf("\nDEBUG: ID SHM: %d\n", getshmid());
+
+
+
+
+
 
         for(g = 0; g<W*H; g++)
             semctl(semid, g, SETVAL, 1);
