@@ -67,6 +67,10 @@ int main(){
     myop.sem_op = -1;
     semop(semid, &myop, 1);
 
+
+    printf("\nDEBUG: SOURCE PID: %d\n", (int)getpid());
+
+
     while(!fals){
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);
@@ -76,6 +80,8 @@ int main(){
             fals = 1;
         }
     }
+
+    shmdt(head);
 
     myop.sem_op = 1;
     semop(semid, &myop, 1);

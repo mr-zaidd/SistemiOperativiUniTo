@@ -41,7 +41,8 @@ void deleteshm(){
         char cmd[16];
         char key[8];
         printf("\nDEBUG: SHM con attachments\n");
-        printf("\nDEBUG: Attachment: %lp\n", (long)buf->shm_lpid);
+        printf("\nDEBUG: Attachment: %ld\n", (long)buf->shm_lpid);
+        kill(SIGKILL, buf->shm_lpid);
         printf("\nDEBUG: SHM ELIMINATA\n");
         strcpy(cmd, "ipcrm -m");
         sprintf(key, "%d", getshmid());

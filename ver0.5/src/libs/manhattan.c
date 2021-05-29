@@ -166,6 +166,7 @@ void movimentoManhattanSEC(int* startx, int* starty, int endx, int endy){
 
     output = shmat(shmidOut , NULL, 0);
     output -> stradaTaxi  = movimentoR + movimentoC;
+    output -> taxiStrada = getpid();
     shmdt(output);
 
     myop.sem_op = 1;

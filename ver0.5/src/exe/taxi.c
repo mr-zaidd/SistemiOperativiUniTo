@@ -1,21 +1,20 @@
 #include "../include/inc.h"
 
 pid_t richiesta;
-
+out* output;
+cell (*head)[W];
 
 void muoriPlease(int signum, siginfo_t* info, void* context){
     if(signum == SIGTERM){
-        /**kill(richiesta, SIGTERM);**/
+        shmdt(head);
+        shmdt(output);
         exit(EXIT_SUCCESS);
     }else if(signum == SIGALRM){
         kill(richiesta, SIGUSR2);
         /**printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
+        shmdt(head);
+        shmdt(output);
         exit(33);
-    }else if(signum == SIGUSR1){
-        if(kill(richiesta, SIGUSR1) == 0)
-            write(STDOUT_FILENO, "\nDEBUG: Inviato segnale SIGUSR1 a richiesta\n", 45);
-        else
-            write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 KILL NON ANDATA BENE\n", 37);
     }
 }
 
@@ -26,7 +25,6 @@ int main(int argc, char* argv[]){
     int j;
     int tmp;
     int fals = 0;
-    cell (*head)[W] = shmat(getshmid(), NULL, 0);
     int shift = getpid();
     struct sembuf myop;
     struct sembuf myopapp;
@@ -36,6 +34,20 @@ int main(int argc, char* argv[]){
     int msglength = 4*sizeof(int) + sizeof(pid_t);
     int semid = semget(TKEY, 1, IPC_CREAT | 0666);
     int semidapp = semget(APPKEY, 1, 0666);
+    struct timeval timeBefore;
+    struct timeval timeAfter;
+    int seconds = 0;
+    int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
+    int semidOut = semget(OUTPUT_KEY, 1, 0666);
+    struct sembuf myopOut;
+    int countRichieste = 0;
+
+
+    head = shmat(getshmid(), NULL, 0);
+
+
+    myopOut.sem_num = 0;
+    myop.sem_flg = 0;
 
     myopapp.sem_num = 0;
     myopapp.sem_flg = 0;
@@ -67,6 +79,8 @@ int main(int argc, char* argv[]){
             fals = 1;
         }
     }
+
+    shmdt(head);
 
 /**    printf("\n\n### Taxi %d BEFORE ###", getpid());
     printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
@@ -101,10 +115,37 @@ int main(int argc, char* argv[]){
 
         richiesta = ricezione.pidRic;
 
+        gettimeofday(&timeBefore, NULL);
+
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);
 
         kill(richiesta, SIGPIPE);
+
+        countRichieste += 1;
+
+        gettimeofday(&timeAfter, NULL);
+
+        seconds = (timeAfter.tv_sec + (timeAfter.tv_usec/1000000)) - (timeBefore.tv_sec * (timeBefore.tv_usec/1000000));
+
+        output = shmat(shmidOut, NULL, 0);
+
+        myopOut.sem_op = -1;
+        semop(semidOut, &myopOut, 1);
+
+        if(countRichieste > output -> staccanovistaTaxi){
+            output -> staccanovistaTaxi = countRichieste;
+            output -> taxiStaccanovista = getpid();
+        }
+
+        if(seconds > output -> tempoTaxi){
+            output->tempoTaxi = seconds;
+            output->taxiTempo = getpid();
+        }
+
+        myopOut.sem_op = 1;
+        semop(semidOut, &myopOut, 1);
+        shmdt(output);
 
         myop.sem_op = -1;
 /**        semop(semid, &myop, 1);
@@ -125,7 +166,6 @@ int main(int argc, char* argv[]){
 **/
     }
 
-   shmdt(head);
    return 0;
 
 }

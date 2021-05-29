@@ -2,7 +2,7 @@
 
 #define signalErr(s,m) if((s) == -1) {perror(m); exit(errno);}
 
-void muori(int signum){
+void muori(int signum, siginfo_t* info, void* context){
 
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
     out* output;
@@ -20,11 +20,12 @@ void muori(int signum){
 
         output = shmat(shmidOut , NULL, 0);
         output -> successi = output->successi + 1;
+        shmdt(output);
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
 
-        write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 39);
+        write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 38);
 
         exit(EXIT_SUCCESS);
     }else if(signum == SIGUSR2){
@@ -33,6 +34,7 @@ void muori(int signum){
 
         output = shmat(shmidOut , NULL, 0);
         output -> abortiti = output->abortiti + 1;
+        shmdt(output);
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
