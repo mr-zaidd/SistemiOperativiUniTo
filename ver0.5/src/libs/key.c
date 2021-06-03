@@ -22,7 +22,8 @@ int readKey(){
     int k = 0;
 
     while(!feof(fp))
-        fscanf(fp, "%d", &k);
+        if(fscanf(fp, "%d", &k) > 0)
+            continue;
     fclose(fp);
     return k;
 
