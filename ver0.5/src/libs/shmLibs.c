@@ -174,23 +174,84 @@ void printMtx(){
     int i;
     int j;
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
+
+    int x;
+    int y;
+    int arrTC[6] = {0};
+    int max = INT_MAX;
+    int c = 0;
+
+    while(c < 6){
+        max = massimorelativo(&x, &y, max);
+        arrTC[c] = x;
+        arrTC[c+1] = y;
+        printf("\nDEBUG: MAX: %d\t%d: %d\t%d: %d\n", max, c, arrTC[c], c+1, arrTC[c+1]);
+        c = c+2;
+    }
+
+    c = 0;
+
     printf("\n### MAPPA ###\n");
     for(i = 0; i < H; i++){
         for(j = 0; j < W; j++){
-            if(head[i][j].source == 1 && head[i][j].one == 0){
-                printf("S    ");
+            if((head[i][j].source == 1) && ((i == arrTC[0] && j == arrTC[1]) ||  (i == arrTC[2] && j == arrTC[3]) || (i == arrTC[4] && j == arrTC[5]))){
+                printf(CWHITE"T   "CRESET);
+            }else if((head[i][j].source == 1)){
+                printf(CMAGENTA"S   "CRESET);
             }else if(head[i][j].one == 1)
-                printf("X    ");
-            else if(head[i][j].one == 0 && head[i][j].count == 0)
-                printf(".    ");
-            else if(head[i][j].count > 0)
-                printf("%d    ", head[i][j].count);
+                printf(CCYAN"X   "CRESET);
+            else if((head[i][j].count >= 0) && ((i != arrTC[0] && j != arrTC[1]) && (i != arrTC[2] && j != arrTC[3]) && (i != arrTC[4] && j != arrTC[5])))
+                printf(".   ");
+            else if((i == arrTC[0] && j == arrTC[1]) ||  (i == arrTC[2] && j == arrTC[3]) || (i == arrTC[4] && j == arrTC[5])){
+                if(head[i][j].count < 10)
+                    printf(CRED"%d   "CRESET, head[i][j].count);
+                else if(head[i][j].count > 10 && head[i][j].count < 100)
+                    printf(CRED"%d  "CRESET, head[i][j].count);
+                else if(head[i][j].count > 100)
+                    printf(CRED"%d "CRESET, head[i][j].count);
+            }
         }
         printf("\n");
     }
     shmdt(head);
     printf("\n### X Holes\t. Libera\t1 Percorso ###\n");
 }
+
+
+int massimorelativo(int* i, int* j, int tmp){
+
+    cell (*head)[W];
+    int x;
+    int y;
+    int max = 0;
+
+    if((head = shmat(getshmid(), NULL, 0)) == (void*)-1)
+        printf("\nSUCA\n");
+
+    for(x = 0; x < H; x++){
+
+        for(y = 0; y < W; y++){
+
+            if((max <= head[x][y].count) && (head[x][y].count < tmp)){
+
+                max = head[x][y].count;
+                printf("\nDEBUG: MAX: %d\tCOUNT: %d\n", max, head[x][y].count);
+                *i = x;
+                *j = y;
+
+            }
+        }
+    }
+
+
+    shmdt(head);
+
+    return max;
+
+}
+
+
+
 
 void fillConf(conf* confg){
 

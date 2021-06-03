@@ -48,6 +48,8 @@
         int outsemid;
         out* output;
         sigset_t set;
+        int* x;
+        int* y;
 
         nTaxi = (char*)malloc(16*sizeof(char));
         timeout = (char*)malloc(16*sizeof(char));

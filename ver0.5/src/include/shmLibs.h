@@ -21,4 +21,6 @@ int inevasi();
 
 void printStats();
 
+int massimorelativo(int* i, int* j, int tmp);
+
 #endif
