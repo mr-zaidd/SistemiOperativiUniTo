@@ -47,6 +47,7 @@
         int outshmid;
         int outsemid;
         out* output;
+        sigset_t set;
 
         nTaxi = (char*)malloc(16*sizeof(char));
         timeout = (char*)malloc(16*sizeof(char));
@@ -57,11 +58,13 @@
 
         sa.sa_flags = SA_SIGINFO;
         sigemptyset(&sa.sa_mask);
-        sa.sa_sigaction = ccHandler;
+        sa.sa_sigaction = ccHandlerSEC;
         sigaction(SIGINT, &sa, NULL);
         sigaction(SIGALRM, &sa, NULL);
         sigaction(SIGTERM, &sa, NULL);
-
+/**
+ *      sigaction(SIGTERM, &sa, NULL);
+**/
         /** OUTPUT **/
         outshmid = shmget(OUTPUT_KEY, sizeof(out), IPC_CREAT | 0666);
         outsemid = semget(OUTPUT_KEY, 1, IPC_CREAT | 0666);

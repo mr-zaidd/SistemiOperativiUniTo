@@ -32,26 +32,10 @@ void deleteshm(){
     buf = &shmid_ds;
 
     shmctl(getshmid(), IPC_STAT, buf);
-    if(buf->shm_nattch == 0){
         if((shmctl(getshmid(), IPC_RMID, 0)) == -1){
             perror("\nEliminazione SHM Aborted");
         }else
             printf("\nSHM ELIMINATA\n");
-    }else{
-        char cmd[16];
-        char key[8];
-        printf("\nDEBUG: SHM con attachments\n");
-        printf("\nDEBUG: Attachment: %ld\n", (long)buf->shm_lpid);
-        kill(SIGKILL, buf->shm_lpid);
-        printf("\nDEBUG: SHM ELIMINATA\n");
-        strcpy(cmd, "ipcrm -m");
-        sprintf(key, "%d", getshmid());
-        strcat(cmd, key);
-        if(system(cmd) == -1){
-            printf("\nDEBUG: ID: %d Shared Memory non trovato - Non esiste\n", getshmid());
-        }
-    }
-
 }
 
 int checkOne(int i, int j){
