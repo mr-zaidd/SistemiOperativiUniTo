@@ -149,6 +149,7 @@ void holesHandler(int holes){
     int tmp;
     int free;
     int shift;
+    int inpiu = 0;
     int semid = semget(readKey(), 0, IPC_CREAT | 0666);
 
     srand(time(NULL));
@@ -161,6 +162,8 @@ void holesHandler(int holes){
             pos = checkPosition(i,j);
             free = checkFreedom(i, j, pos);
             if(free == 1){
+                inpiu += 1;
+                printf("\nHOLES: %d\n", inpiu);
                 insertHole(i, j);
                 semctl(semid, (i*W+j), SETVAL, 0);
                 holes--;
@@ -193,20 +196,20 @@ void printMtx(){
         for(j = 0; j < H; j++){
 
             if((head[i][j].source == 1) && (max1 == head[i][j].count || max2 == head[i][j].count || max3 == head[i][j].count))
-                printf(CWHITE"  T  "CRESET);
+                printf(CWHITE"T  "CRESET);
             else if(head[i][j].source == 1)
-                printf(CMAGENTA"  S  "CRESET);
+                printf(CMAGENTA"S  "CRESET);
             else if(head[i][j].one == 1)
-                printf(CCYAN"  X  "CRESET);
+                printf(CCYAN"X  "CRESET);
             else if((head[i][j].count == max1 || head[i][j].count == max2 || head[i][j].count == max3) && head[i][j].count != 0){
                 if(head[i][j].count < 10)
-                    printf(CRED"  %d  "CRESET, head[i][j].count);
+                    printf(CRED"%d  "CRESET, head[i][j].count);
                 else if(head[i][j].count >= 10 && head[i][j].count < 100)
-                    printf(CRED"  %d "CRESET, head[i][j].count);
+                    printf(CRED"%d "CRESET, head[i][j].count);
                 else if(head[i][j].count >= 100)
-                    printf(CRED"  %d"CRESET, head[i][j].count);
+                    printf(CRED"%d"CRESET, head[i][j].count);
             }else
-                printf("  .  ");
+                printf(".  ");
         }
         printf("\n");
     }

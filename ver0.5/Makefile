@@ -1,6 +1,7 @@
 CC = gcc
 #CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=50 -D H=50
-CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=60 -D H=20
+CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=100 -D H=100
+#CFLAGS = -g -O2 -std=c89 -pedantic -IC -D W=20 -D H=60
 
 BIN = bin/
 BUILD = build/

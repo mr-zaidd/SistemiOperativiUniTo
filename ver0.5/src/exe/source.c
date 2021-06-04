@@ -118,6 +118,9 @@ int main(){
 
     }
 
+    while(1)
+        waitpid(WAIT_ANY, NULL, WEXITSTATUS);
+
     return 0;
 
 }
