@@ -14,8 +14,9 @@ void createAgain(int signum, siginfo_t* info, void* context){
             /**
             printf("\nDEBUG: FIGLIO del TAXI\n");
             exit(0);
-            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());**/
+            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
             write(STDOUT_FILENO, "\nDEBUG: Partorito nuovo taxi\n", 29);
+            **/
             execvp("./exe/taxi", ch);
         }
     }else if(signum == SIGTERM){
@@ -52,8 +53,6 @@ int main(int argc, char* argv[]){
     if(argc>3)
         raise(SIGTERM);
 
-    printf("\nDEBUG: Numero dei Taxi da generare %d\n", nTaxi);
-
     semid = semget(TKEY, 1, IPC_CREAT | 0666);
     semctl(semid, 0, SETVAL, 1);
 
@@ -68,8 +67,8 @@ int main(int argc, char* argv[]){
             /**
             printf("\nDEBUG: FIGLIO del TAXI\n");
             exit(0);
-            **/
             printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
+            **/
             execvp("./exe/taxi", ch);
 
         }

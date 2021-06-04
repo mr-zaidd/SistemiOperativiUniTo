@@ -103,6 +103,7 @@ int main(int argc, char* argv[]){
     while(1){
 
         msgrcv(msgid, &ricezione, msglength, INVIO, 0);
+/**
         printf("\nDEBUG: Richiesta presa in incarico\tpi: %d\tpy: %d\ti: %d\tj: %d\tx: %d\ty: %d\tPidRichiesta: %d\n",
                 i,
                 j,
@@ -112,7 +113,7 @@ int main(int argc, char* argv[]){
                 ricezione.arrivi[3],
                 (int)ricezione.pidRic);
         fflush(stdout);
-
+**/
         richiesta = ricezione.pidRic;
 
         gettimeofday(&timeBefore, NULL);

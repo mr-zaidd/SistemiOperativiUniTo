@@ -170,6 +170,77 @@ void holesHandler(int holes){
     }
 }
 
+
+void printMtx(){
+
+    int i;
+    int j;
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+
+    int max1 = 0;
+    int max2 = 0;
+    int max3 = 0;
+    int x;
+    int y;
+
+    max1 = massimorelativo(&x, &y, INT_MAX);
+    max2 = massimorelativo(&x, &y, max1);
+    max3 = massimorelativo(&x, &y, max2);
+
+
+    printf("\n### MAPPA FINALE ###\n");
+    for(i = 0; i < W; i++){
+        for(j = 0; j < H; j++){
+
+            if((head[i][j].source == 1) && (max1 == head[i][j].count || max2 == head[i][j].count || max3 == head[i][j].count))
+                printf(CWHITE"  T  "CRESET);
+            else if(head[i][j].source == 1)
+                printf(CMAGENTA"  S  "CRESET);
+            else if(head[i][j].one == 1)
+                printf(CCYAN"  X  "CRESET);
+            else if((head[i][j].count == max1 || head[i][j].count == max2 || head[i][j].count == max3) && head[i][j].count != 0){
+                if(head[i][j].count < 10)
+                    printf(CRED"  %d  "CRESET, head[i][j].count);
+                else if(head[i][j].count >= 10 && head[i][j].count < 100)
+                    printf(CRED"  %d "CRESET, head[i][j].count);
+                else if(head[i][j].count >= 100)
+                    printf(CRED"  %d"CRESET, head[i][j].count);
+            }else
+                printf("  .  ");
+        }
+        printf("\n");
+    }
+    shmdt(head);
+    printf("\n### X Holes\t. Libera\tT TopCell/Source\tS Source\t# Attraversamenti ###\n");
+}
+
+
+void printMtxSEC(int tmp){
+
+    int i;
+    int j;
+    cell (*head)[W] = shmat(getshmid(), NULL, 0);
+
+    printf("\n### MAPPA: SECONDO -> %d ###\n", tmp);
+    for(i = 0; i < W; i++){
+        for(j = 0; j < H; j++){
+
+            if(head[i][j].source == 1)
+                printf(CMAGENTA"  S  "CRESET);
+            else if(head[i][j].one == 1)
+                printf(CCYAN"  X  "CRESET);
+            else if(head[i][j].soCap > 0)
+                printf(CRED"  1  "CRESET);
+            else
+                printf("  .  ");
+        }
+        printf("\n");
+    }
+    shmdt(head);
+}
+
+
+/**
 void printMtx(){
     int i;
     int j;
@@ -209,14 +280,15 @@ void printMtx(){
                     printf(CRED"%d  "CRESET, head[i][j].count);
                 else if(head[i][j].count > 100)
                     printf(CRED"%d "CRESET, head[i][j].count);
-            }
+            }else
+                printf("%d   ", head[i][j].count);
         }
         printf("\n");
     }
     shmdt(head);
-    printf("\n### X Holes\t. Libera\t1 Percorso ###\n");
+    printf("\n### X Holes\t. Libera\tT TopCell/Source\tS Source\t# Attraversamenti ###\n");
 }
-
+**/
 
 int massimorelativo(int* i, int* j, int tmp){
 
@@ -226,7 +298,7 @@ int massimorelativo(int* i, int* j, int tmp){
     int max = 0;
 
     if((head = shmat(getshmid(), NULL, 0)) == (void*)-1)
-        printf("\nSUCA\n");
+        printf("\nDEBUG: Errore shmat in shmLibs massimorelativo\n");
 
     for(x = 0; x < H; x++){
 
@@ -235,7 +307,6 @@ int massimorelativo(int* i, int* j, int tmp){
             if((max <= head[x][y].count) && (head[x][y].count < tmp)){
 
                 max = head[x][y].count;
-                printf("\nDEBUG: MAX: %d\tCOUNT: %d\n", max, head[x][y].count);
                 *i = x;
                 *j = y;
 

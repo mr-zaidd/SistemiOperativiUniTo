@@ -15,7 +15,9 @@ void muori(int signum, siginfo_t* info, void* context){
     if(signum == SIGTERM){
         exit(EXIT_SUCCESS);
     }else if(signum == SIGPIPE){
+/**
         write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 ricevuto da richiesta\n", 38);
+**/
         semop(semidOut, &myop, 1);
 
         output = shmat(shmidOut , NULL, 0);
@@ -24,9 +26,9 @@ void muori(int signum, siginfo_t* info, void* context){
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
-
+/**
         write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 38);
-
+**/
         exit(EXIT_SUCCESS);
     }else if(signum == SIGUSR2){
 
@@ -38,9 +40,10 @@ void muori(int signum, siginfo_t* info, void* context){
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
-
+/**
         write(STDOUT_FILENO, "\nDEBUG: RICHIESTA ABORTITA\n", 28);
-        exit(33);
+**/
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -84,8 +87,6 @@ int main(int argc, char* argv[]){
     semop(semidapp, &myopapp, 1);
 
     msgsnd(msgid, &invio, inviolength, 0);
-    printf("\nDEBUG: pidRICHIESTA: %d\n", getpid());
-    fflush(stdout);
 /**
     if((msgsnd(msgid, &invio, inviolength, IPC_NOWAIT)) < 0){
 

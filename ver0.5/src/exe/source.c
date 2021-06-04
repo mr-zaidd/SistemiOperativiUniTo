@@ -13,8 +13,9 @@ void dieAndMore(int signum, siginfo_t* info, void* context){
     up.tv_nsec = 0;
 
     if(signum == SIGUSR1){
-        /**nanosleep(&up, &up2);**/
+        /**
         write(STDOUT_FILENO, "\nDEBUG: Sto partorendo una richiesta\n", 37);
+        **/
         if((figli[count] = fork()) == -1){
             printf("\nDEBUG: RICHIESTA fallita\n");
         }else if(figli[count] == 0){
@@ -67,10 +68,6 @@ int main(){
     myop.sem_op = -1;
     semop(semid, &myop, 1);
 
-
-    printf("\nDEBUG: SOURCE PID: %d\n", (int)getpid());
-
-
     while(!fals){
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);
@@ -113,8 +110,10 @@ int main(){
 **/
     while(1){
         nanosleep(&up, &up2);
+        /**
         printf("\nDEBUG: NUMERO MESSAGGI IN CODA: %d\n", inevasi());
         fflush(stdout);
+        **/
         raise(SIGUSR1);
 
     }

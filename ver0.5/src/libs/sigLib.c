@@ -3,7 +3,6 @@
 void ccHandlerSEC(int signum, siginfo_t* info, void* context){
 
      if(signum == SIGALRM){
-         write(STDOUT_FILENO,"\nSTO MORENDO ORA.\n", 18);
          kill(0, SIGTERM);
          printMtx();
          printStats();
@@ -17,10 +16,13 @@ void ccHandlerSEC(int signum, siginfo_t* info, void* context){
      }else if(signum == SIGTERM)
          ;;
 }
+
 void ccHandler(int signum, siginfo_t* info, void* context){
 
      if(signum == SIGALRM){
+         /**
          write(STDOUT_FILENO,"\nSTO MORENDO ORA.\n", 18);
+         **/
          kill(0, SIGTERM);
          printMtx();
          printStats();

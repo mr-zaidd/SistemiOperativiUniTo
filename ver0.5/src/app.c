@@ -50,6 +50,8 @@
         sigset_t set;
         int* x;
         int* y;
+        int fals = 1;
+        int cPrint = 0;
 
         nTaxi = (char*)malloc(16*sizeof(char));
         timeout = (char*)malloc(16*sizeof(char));
@@ -85,20 +87,10 @@
         confg = (conf*) malloc(sizeof(conf));
         key = ftok(".", 'b');
         createKeyFile(key);
-        printf("DEBUG: Verifica Chiave: %d\n", readKey());
         parseConf(confg, fileConf);
         printConf(confg);
         shmid = createshm();
         semid = semget(readKey(), W*H, IPC_CREAT | 0666);
-
-
-
-        printf("\nDEBUG: ID SHM: %d\n", getshmid());
-
-
-
-
-
 
         for(g = 0; g<W*H; g++)
             semctl(semid, g, SETVAL, 1);
@@ -106,7 +98,6 @@
         shmAt = shmat(shmid, NULL, 0);
         fillConf(confg);
         holesHandler(confg->soHoles);
-        printMtx();
 
         sprintf(nSources, "%d", confg->soSources);
         sprintf(nTaxi, "%d", confg->soTaxi);
@@ -161,7 +152,16 @@
 
         alarm(confg->soDuration);
 
-        free(confg);
+        while(fals){
+            printMtxSEC(cPrint);
+            sleep(1);
+            cPrint++;
+            if(cPrint == (confg->soDuration - 1)){
+                fals = 0;
+                free(confg);
+            }
+        }
+
 
         for(c=0; c<2; c++)
             waitpid(WAIT_ANY, NULL, 0);
