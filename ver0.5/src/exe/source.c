@@ -26,7 +26,8 @@ void dieAndMore(int signum, siginfo_t* info, void* context){
         free(figli);
         kill(0, SIGTERM);
         exit(EXIT_SUCCESS);
-    }
+    }else
+        ;;
 }
 
 
@@ -59,6 +60,7 @@ int main(){
     sa.sa_sigaction = dieAndMore;
     sigaction(SIGUSR1, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGCHLD, &sa, NULL);
 
     up.tv_sec = 1;
     up.tv_nsec = 0;
@@ -119,7 +121,7 @@ int main(){
     }
 
     while(1)
-        waitpid(WAIT_ANY, NULL, WEXITSTATUS);
+        waitpid(WAIT_ANY, NULL, 0);
 
     return 0;
 
