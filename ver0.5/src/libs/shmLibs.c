@@ -233,8 +233,10 @@ void printMtxSEC(int tmp){
                 printf(CRED"  1  "CRESET);
             else
                 printf("  .  ");
+            fflush(stdout);
         }
         printf("\n");
+        fflush(stdout);
     }
     shmdt(head);
 }
