@@ -153,7 +153,7 @@
         alarm(confg->soDuration);
 
         while(fals){
-        /**    printMtxSEC(cPrint);**/
+            printMtxSEC(cPrint);
             sleep(1);
             cPrint++;
             if(cPrint == (confg->soDuration - 1)){

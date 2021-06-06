@@ -56,6 +56,13 @@ typedef struct mex{
 
 }mex;
 
+typedef struct mexSig{
+
+    long mtype;
+    int segnale;
+
+}mexSig;
+
 typedef struct out{
 
     int successi;
@@ -84,6 +91,7 @@ typedef struct out{
 #define INVIO 50
 
 #define OUTPUT_KEY 0x2A
+#define MKEY_OUT 0x3E7
 
 
 #define CWHITE   "\x1B[37m"

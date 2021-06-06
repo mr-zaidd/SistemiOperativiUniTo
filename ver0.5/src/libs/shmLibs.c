@@ -230,17 +230,17 @@ void printMtxSEC(int tmp){
     cell (*head)[W] = shmat(getshmid(), NULL, 0);
 
     printf("\n### MAPPA: SECONDO -> %d ###\n", tmp);
-    for(i = 0; i < W; i++){
-        for(j = 0; j < H; j++){
+    for(i = 0; i < H; i++){
+        for(j = 0; j < W; j++){
 
             if(head[i][j].source == 1)
-                printf(CMAGENTA"  S  "CRESET);
+                printf(CMAGENTA"S  "CRESET);
             else if(head[i][j].one == 1)
-                printf(CCYAN"  X  "CRESET);
+                printf(CCYAN"X  "CRESET);
             else if(head[i][j].soCap > 0)
-                printf(CRED"  1  "CRESET);
+                printf(CRED"1  "CRESET);
             else
-                printf("  .  ");
+                printf(".  ");
             fflush(stdout);
         }
         printf("\n");
@@ -369,6 +369,8 @@ void clearAll(){
     int semidapp = semget(APPKEY, 0, 0666);
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
     int semidOut = semget(OUTPUT_KEY, 0, 0666);
+    int semid42 = semget(0x42, 0, 0666);
+    int msgidOut = msgget(MKEY_OUT, 0666);
 
     deleteshm();
     shmctl(shmidOut, IPC_RMID, NULL);
@@ -378,6 +380,8 @@ void clearAll(){
     semctl(tkey, 0, IPC_RMID, 0);
     semctl(semidapp, 0, IPC_RMID, 0);
     msgctl(mkey, IPC_RMID, NULL);
+    semctl(semid42, 0, IPC_RMID, 0);
+    msgctl(msgidOut, IPC_RMID, NULL);
 
 }
 

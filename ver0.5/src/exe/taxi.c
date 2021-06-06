@@ -10,9 +10,14 @@ void muoriPlease(int signum, siginfo_t* info, void* context){
         shmdt(output);
         exit(EXIT_SUCCESS);
     }else if(signum == SIGALRM){
-        kill(richiesta, SIGVTALRM);
-        usleep(1000000);
-        /**printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
+        /**
+	kill(richiesta, SIGUSR2);
+        printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
+	int msgidOut = msgget(MKEY_OUT, 0666);
+	mexSig messaggioSegnale;
+	messaggioSegnale.mtype = (long)richiesta;
+	messaggioSegnale.segnale = 35;
+	msgsnd(msgidOut, &messaggioSegnale, sizeof(int), 0);
         shmdt(head);
         shmdt(output);
         exit(33);
@@ -45,6 +50,9 @@ int main(int argc, char* argv[]){
     int countRichieste = 0;
     int semidMsg = semget(0x042, 1, IPC_CREAT | 0666);
 
+    int msgidOut = msgget(MKEY_OUT, 0666);
+    mexSig messaggioSegnale;
+
     head = shmat(getshmid(), NULL, 0);
 
     myopMsg.sem_num = 0;
@@ -64,7 +72,6 @@ int main(int argc, char* argv[]){
     sa.sa_sigaction = muoriPlease;
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGALRM, &sa, NULL);
-    sigaction(SIGPIPE, &sa, NULL);
 
 
     myop.sem_num = 0;
@@ -132,8 +139,13 @@ int main(int argc, char* argv[]){
 
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);
-
+/**
         kill(richiesta, SIGPIPE);
+**/
+	messaggioSegnale.mtype = (long)richiesta;
+	messaggioSegnale.segnale = 70;
+
+	msgsnd(msgidOut, &messaggioSegnale, sizeof(int), 0);
 
         countRichieste += 1;
 

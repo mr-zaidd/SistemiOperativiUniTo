@@ -38,6 +38,7 @@ int main(int argc, char* argv[]){
     pid_t killed;
     int semidapp = semget(APPKEY, 1, IPC_CREAT | 0666);
     int semidMsg = semget(0x042, 1, IPC_CREAT | 0666);
+    int msgidOut = msgget(MKEY_OUT, IPC_CREAT | 0666);
     semctl(semidMsg, 0, SETVAL, 1);
 
     sa.sa_flags = SA_SIGINFO;

@@ -2,10 +2,12 @@
 
 #define signalErr(s,m) if((s) == -1) {perror(m); exit(errno);}
 
-
+struct sigaction saPipe;
 struct sigaction sa;
 
-void muori(int signum, siginfo_t* info, void* context){
+
+void funzioneSuccessoAborto(int sig){
+
 
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
     out* output;
@@ -15,12 +17,59 @@ void muori(int signum, siginfo_t* info, void* context){
     myop.sem_flg = 0;
     myop.sem_op = -1;
 
+    if(sig == 70){
+        semop(semidOut, &myop, 1);
+
+        output = shmat(shmidOut , NULL, 0);
+        output -> successi = output->successi + 1;
+        shmdt(output);
+
+        myop.sem_op = 1;
+        semop(semidOut, &myop, 1);
+	/**
+        write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 38);
+	**/
+        exit(EXIT_SUCCESS);
+    }else if(sig == 35){
+        semop(semidOut, &myop, 1);
+
+        output = shmat(shmidOut , NULL, 0);
+        output -> abortiti = output->abortiti + 1;
+        shmdt(output);
+
+        myop.sem_op = 1;
+        semop(semidOut, &myop, 1);
+	/**
+        write(STDOUT_FILENO, "\nDEBUG: RICHIESTA ABORTITA\n", 28);
+	**/
+        exit(EXIT_FAILURE);
+    }else{
+    
+    
+	exit(33);
+
+    }
+}
+
+
+void muori(int signum, siginfo_t* info, void* context){
+
+/**
+    int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
+    out* output;
+    int semidOut = semget(OUTPUT_KEY, 1, 0666);
+    struct sembuf myop;
+    myop.sem_num = 0;
+    myop.sem_flg = 0;
+    myop.sem_op = -1;
+**/
     if(signum == SIGTERM){
         exit(EXIT_SUCCESS);
-    }else if(signum == SIGPIPE){
+    }
+    
 /**
+    else if(signum == SIGPIPE){
         write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 ricevuto da richiesta\n", 38);
-**/
         sigaddset(&sa.sa_mask, SIGUSR2);
         semop(semidOut, &myop, 1);
 
@@ -32,23 +81,11 @@ void muori(int signum, siginfo_t* info, void* context){
         semop(semidOut, &myop, 1);
         write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 38);
         exit(EXIT_SUCCESS);
-    }else if(signum == SIGVTALRM){
-/**
-        printf("\nDEBUG: pidRichiesta: %d\n", getpid());
-        fflush(stdout);
-**/
-        sigaddset(&sa.sa_mask, SIGPIPE);
-        semop(semidOut, &myop, 1);
-
-        output = shmat(shmidOut , NULL, 0);
-        output -> abortiti = output->abortiti + 1;
-        shmdt(output);
-
-        myop.sem_op = 1;
-        semop(semidOut, &myop, 1);
-        write(STDOUT_FILENO, "\nDEBUG: RICHIESTA ABORTITA\n", 28);
-        exit(EXIT_FAILURE);
+    }else if(signum == SIGUSR2){
+	    execvp("./absc", NULL);
     }
+
+**/
 }
 
 int main(int argc, char* argv[]){
@@ -63,9 +100,10 @@ int main(int argc, char* argv[]){
     size_t inviolength;
     int semidapp = semget(APPKEY, 1, 0666);
     struct sembuf myopapp;
-
     int signalW;
     sigset_t setW;
+    int msgidOut = msgget(MKEY_OUT, 0666);
+    mexSig messaggioSegnale;
 
     myopapp.sem_num = 0;
     myopapp.sem_flg = 0;
@@ -74,10 +112,11 @@ int main(int argc, char* argv[]){
     sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muori;
+/**
     sigaction(SIGUSR2, &sa, NULL);
-    sigaction(SIGVTALRM, &sa, NULL);
-    sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGPIPE, &sa, NULL);
+**/
+    sigaction(SIGTERM, &sa, NULL);
 
     srand(time(NULL));
 
@@ -93,16 +132,17 @@ int main(int argc, char* argv[]){
     semop(semidapp, &myopapp, 1);
 
     msgsnd(msgid, &invio, inviolength, 0);
-/**
-    if((msgsnd(msgid, &invio, inviolength, IPC_NOWAIT)) < 0){
 
-        printf("\nDEBUG: Messaggio non inviato da PID: %d\n", getpid());
+    msgrcv(msgidOut, &messaggioSegnale, sizeof(int), (long)getpid(), 0);
 
+    if(messaggioSegnale.segnale == 70){
+    	funzioneSuccessoAborto(messaggioSegnale.segnale);
+    }else if(messaggioSegnale.segnale == 35){
+    	funzioneSuccessoAborto(messaggioSegnale.segnale);
+    }else{
+    	raise(SIGTERM);
     }
-    sigwait(&setW, &signalW);
 
-**/
-    pause();
     return 0;
 
 }
