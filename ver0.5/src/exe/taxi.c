@@ -10,7 +10,8 @@ void muoriPlease(int signum, siginfo_t* info, void* context){
         shmdt(output);
         exit(EXIT_SUCCESS);
     }else if(signum == SIGALRM){
-        kill(richiesta, SIGUSR2);
+        kill(richiesta, SIGVTALRM);
+        usleep(1000000);
         /**printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
         shmdt(head);
         shmdt(output);
@@ -40,10 +41,15 @@ int main(int argc, char* argv[]){
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
     int semidOut = semget(OUTPUT_KEY, 1, 0666);
     struct sembuf myopOut;
+    struct sembuf myopMsg;
     int countRichieste = 0;
-
+    int semidMsg = semget(0x042, 1, IPC_CREAT | 0666);
 
     head = shmat(getshmid(), NULL, 0);
+
+    myopMsg.sem_num = 0;
+    myopMsg.sem_flg = 0;
+    myopMsg.sem_op = -1;
 
 
     myopOut.sem_num = 0;
@@ -53,7 +59,7 @@ int main(int argc, char* argv[]){
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
 
-    sa.sa_flags = SA_SIGINFO | SA_NODEFER;
+    sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muoriPlease;
     sigaction(SIGTERM, &sa, NULL);
@@ -102,8 +108,14 @@ int main(int argc, char* argv[]){
 
     while(1){
 
+        semop(semidMsg, &myopMsg, 1);
+
         msgrcv(msgid, &ricezione, msglength, INVIO, 0);
-/**
+
+        myopMsg.sem_op = 1;
+        semop(semidMsg, &myopMsg, 1);
+
+        /**
         printf("\nDEBUG: Richiesta presa in incarico\tpi: %d\tpy: %d\ti: %d\tj: %d\tx: %d\ty: %d\tPidRichiesta: %d\n",
                 i,
                 j,

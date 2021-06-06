@@ -152,18 +152,23 @@ void holesHandler(int holes){
     int inpiu = 0;
     int semid = semget(readKey(), 0, IPC_CREAT | 0666);
 
+    /**srand(time(NULL));**/
+    shift = 24;
     srand(time(NULL));
-    shift = rand();
     while(holes != 0){
+        /**
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);
+        **/
+        i = (rand() % H);
+        j = (rand() % W);
         tmp = checkOne(i,j);
         if(tmp == 1){
             pos = checkPosition(i,j);
             free = checkFreedom(i, j, pos);
             if(free == 1){
                 inpiu += 1;
-                printf("\nHOLES: %d\n", inpiu);
+                /**printf("\nHOLES: %d\n", inpiu);**/
                 insertHole(i, j);
                 semctl(semid, (i*W+j), SETVAL, 0);
                 holes--;
@@ -192,8 +197,8 @@ void printMtx(){
 
 
     printf("\n### MAPPA FINALE ###\n");
-    for(i = 0; i < W; i++){
-        for(j = 0; j < H; j++){
+    for(i = 0; i < H; i++){
+        for(j = 0; j < W; j++){
 
             if((head[i][j].source == 1) && (max1 == head[i][j].count || max2 == head[i][j].count || max3 == head[i][j].count))
                 printf(CWHITE"T  "CRESET);

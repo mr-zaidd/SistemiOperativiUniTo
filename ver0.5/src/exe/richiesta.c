@@ -2,6 +2,9 @@
 
 #define signalErr(s,m) if((s) == -1) {perror(m); exit(errno);}
 
+
+struct sigaction sa;
+
 void muori(int signum, siginfo_t* info, void* context){
 
     int shmidOut = shmget(OUTPUT_KEY, 0, 0666);
@@ -18,6 +21,7 @@ void muori(int signum, siginfo_t* info, void* context){
 /**
         write(STDOUT_FILENO, "\nDEBUG: SIGUSR1 ricevuto da richiesta\n", 38);
 **/
+        sigaddset(&sa.sa_mask, SIGUSR2);
         semop(semidOut, &myop, 1);
 
         output = shmat(shmidOut , NULL, 0);
@@ -26,12 +30,14 @@ void muori(int signum, siginfo_t* info, void* context){
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
-/**
         write(STDOUT_FILENO, "\nDEBUG: *** RICHIESTA COMPLETATA ***\n", 38);
-**/
         exit(EXIT_SUCCESS);
-    }else if(signum == SIGUSR2){
-
+    }else if(signum == SIGVTALRM){
+/**
+        printf("\nDEBUG: pidRichiesta: %d\n", getpid());
+        fflush(stdout);
+**/
+        sigaddset(&sa.sa_mask, SIGPIPE);
         semop(semidOut, &myop, 1);
 
         output = shmat(shmidOut , NULL, 0);
@@ -40,9 +46,7 @@ void muori(int signum, siginfo_t* info, void* context){
 
         myop.sem_op = 1;
         semop(semidOut, &myop, 1);
-/**
         write(STDOUT_FILENO, "\nDEBUG: RICHIESTA ABORTITA\n", 28);
-**/
         exit(EXIT_FAILURE);
     }
 }
@@ -54,7 +58,6 @@ int main(int argc, char* argv[]){
     int i = atoi(argv[1]);
     int j = atoi(argv[2]);
     int msgid = msgget(MKEY, IPC_CREAT | 0666);
-    struct sigaction sa;
     mex invio;
     int shift = randomizeNum(randomizeNum(4,getpid()),100);
     size_t inviolength;
@@ -68,18 +71,21 @@ int main(int argc, char* argv[]){
     myopapp.sem_flg = 0;
     myopapp.sem_op = 0;
 
-    sa.sa_flags = SA_NODEFER;
+    sa.sa_flags = SA_SIGINFO;
     sigemptyset(&sa.sa_mask);
     sa.sa_sigaction = muori;
     sigaction(SIGUSR2, &sa, NULL);
+    sigaction(SIGVTALRM, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGPIPE, &sa, NULL);
+
+    srand(time(NULL));
 
     invio.mtype = INVIO;
     invio.arrivi[0] = i;
     invio.arrivi[1] = j;
-    invio.arrivi[2] = randomizeNum(getpid()*shift, H);
-    invio.arrivi[3] = randomizeNum(getpid()*shift+2, W);
+    invio.arrivi[2] = rand()%H;
+    invio.arrivi[3] = rand()%W;
     invio.pidRic = getpid();
 
     inviolength = sizeof(invio.arrivi) + sizeof(pid_t);

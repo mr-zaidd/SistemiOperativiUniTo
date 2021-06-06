@@ -13,8 +13,11 @@ void ccHandlerSEC(int signum, siginfo_t* info, void* context){
         kill(0, SIGTERM);
         exit(33);
 
-     }else if(signum == SIGTERM)
+     }else if(signum == SIGTERM){
          ;;
+     }else
+        write(STDOUT_FILENO, "\nDEBUG: SEGNALE NON GESTITO ARRIVATO\n", 37);
+
 }
 
 void ccHandler(int signum, siginfo_t* info, void* context){
