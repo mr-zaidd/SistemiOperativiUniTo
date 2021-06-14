@@ -9,7 +9,6 @@ void muoio(int signum, siginfo_t* info, void* context){
 
     if(signum == SIGTERM){
         semctl(semid, 0, IPC_RMID, 0);
-        /**msgctl(msgid, IPC_RMID, NULL);**/
         free(figli);
         kill(0, SIGTERM);
         exit(EXIT_SUCCESS);

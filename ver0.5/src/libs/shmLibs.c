@@ -152,14 +152,9 @@ void holesHandler(int holes){
     int inpiu = 0;
     int semid = semget(readKey(), 0, IPC_CREAT | 0666);
 
-    /**srand(time(NULL));**/
     shift = 24;
     srand(time(NULL));
     while(holes != 0){
-        /**
-        i = randomizeNum(shift, H);
-        j = randomizeNum(shift+2, W);
-        **/
         i = (rand() % H);
         j = (rand() % W);
         tmp = checkOne(i,j);
@@ -168,7 +163,6 @@ void holesHandler(int holes){
             free = checkFreedom(i, j, pos);
             if(free == 1){
                 inpiu += 1;
-                /**printf("\nHOLES: %d\n", inpiu);**/
                 insertHole(i, j);
                 semctl(semid, (i*W+j), SETVAL, 0);
                 holes--;
@@ -248,57 +242,6 @@ void printMtxSEC(int tmp){
     }
     shmdt(head);
 }
-
-
-/**
-void printMtx(){
-    int i;
-    int j;
-    cell (*head)[W] = shmat(getshmid(), NULL, 0);
-
-    int x;
-    int y;
-    int arrTC[6] = {0};
-    int max = INT_MAX;
-    int c = 0;
-
-    while(c < 6){
-        max = massimorelativo(&x, &y, max);
-        arrTC[c] = x;
-        arrTC[c+1] = y;
-        printf("\nDEBUG: MAX: %d\t%d: %d\t%d: %d\n", max, c, arrTC[c], c+1, arrTC[c+1]);
-        c = c+2;
-    }
-
-    c = 0;
-
-    printf("\n### MAPPA ###\n");
-    for(i = 0; i < H; i++){
-        for(j = 0; j < W; j++){
-            if((head[i][j].source == 1) && ((i == arrTC[0] && j == arrTC[1]) ||  (i == arrTC[2] && j == arrTC[3]) || (i == arrTC[4] && j == arrTC[5]))){
-                printf(CWHITE"T   "CRESET);
-            }else if((head[i][j].source == 1)){
-                printf(CMAGENTA"S   "CRESET);
-            }else if(head[i][j].one == 1)
-                printf(CCYAN"X   "CRESET);
-            else if((head[i][j].count >= 0) && ((i != arrTC[0] && j != arrTC[1]) && (i != arrTC[2] && j != arrTC[3]) && (i != arrTC[4] && j != arrTC[5])))
-                printf(".   ");
-            else if((i == arrTC[0] && j == arrTC[1]) ||  (i == arrTC[2] && j == arrTC[3]) || (i == arrTC[4] && j == arrTC[5])){
-                if(head[i][j].count < 10)
-                    printf(CRED"%d   "CRESET, head[i][j].count);
-                else if(head[i][j].count > 10 && head[i][j].count < 100)
-                    printf(CRED"%d  "CRESET, head[i][j].count);
-                else if(head[i][j].count > 100)
-                    printf(CRED"%d "CRESET, head[i][j].count);
-            }else
-                printf("%d   ", head[i][j].count);
-        }
-        printf("\n");
-    }
-    shmdt(head);
-    printf("\n### X Holes\t. Libera\tT TopCell/Source\tS Source\t# Attraversamenti ###\n");
-}
-**/
 
 int massimorelativo(int* i, int* j, int tmp){
 

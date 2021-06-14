@@ -1,6 +1,5 @@
 #include "../include/inc.h"
 
-
 char* ch[4];
 int count;
 pid_t* figli;
@@ -13,9 +12,6 @@ void dieAndMore(int signum, siginfo_t* info, void* context){
     up.tv_nsec = 0;
 
     if(signum == SIGUSR1){
-        /**
-        write(STDOUT_FILENO, "\nDEBUG: Sto partorendo una richiesta\n", 37);
-        **/
         if((figli[count] = fork()) == -1){
             printf("\nDEBUG: RICHIESTA fallita\n");
         }else if(figli[count] == 0){
@@ -95,29 +91,12 @@ int main(){
     ch[3] = NULL;
 
     count = 0;
-/**
-    free(indexi);
-    free(indexy);
-**/
+
     semop(semidapp, &myopapp, 1);
 
-
-/**
-    if((figli[count] = fork()) == -1){
-        printf("\nDEBUG: RICHIESTA non generata");
-    }else if(figli[count] == 0){
-        execvp("./exe/richiesta", ch);
-    }
-    count++;
-**/
     while(1){
         nanosleep(&up, &up2);
-        /**
-        printf("\nDEBUG: NUMERO MESSAGGI IN CODA: %d\n", inevasi());
-        fflush(stdout);
-        **/
         raise(SIGUSR1);
-
     }
 
     while(1)

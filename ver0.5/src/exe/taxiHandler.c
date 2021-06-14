@@ -11,12 +11,6 @@ void createAgain(int signum, siginfo_t* info, void* context){
         if((figli[c] = fork()) == -1){
             printf("Taxi %d non generato", figli[c]);
         }else if(figli[c] == 0){
-            /**
-            printf("\nDEBUG: FIGLIO del TAXI\n");
-            exit(0);
-            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
-            write(STDOUT_FILENO, "\nDEBUG: Partorito nuovo taxi\n", 29);
-            **/
             execvp("./exe/taxi", ch);
         }
     }else if(signum == SIGTERM){
@@ -66,14 +60,7 @@ int main(int argc, char* argv[]){
             printf("Taxi %d non generato", tmp);
 
         }else if(figli[tmp] == 0){
-
-            /**
-            printf("\nDEBUG: FIGLIO del TAXI\n");
-            exit(0);
-            printf("\nDEBUG: Figlio partorito da taxiHandler! PidT: %d\n", getpid());
-            **/
-            execvp("./exe/taxi", ch);
-
+           execvp("./exe/taxi", ch);
         }
         ++tmp;
 
@@ -90,15 +77,9 @@ int main(int argc, char* argv[]){
         for(c = 0; c < nTaxi; c++){
             if(killed == figli[c]){
                 raise(SIGUSR1);
-                /**break;**/
             }
         }
     }
-
-/**
-    for(c=0; c<nTaxi; c++)
-        waitpid(WAIT_ANY, NULL, 0);
-**/
 
     return 0;
 

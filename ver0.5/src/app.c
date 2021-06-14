@@ -1,31 +1,6 @@
 #include "include/inc.h"
-    /**
-    void printCelle(){
-        cell (*head)[W] = shmat(getshmid(), NULL, 0);
-        int i = 0;
-        int j = 0;
 
-        for(; i < W; i++){
-            for(; j < H; j++){
-                printf("\n###CELLA %d %d###\n", i, j);
-                printf("\nOne: %d\nCapacità: %d\nAttraversamento: %d\n", head[i][j].one, head[i][j].soCap, head[i][j].soTime);
-            }
-        }
-        shmdt(head);
-    }
-
-    void stampaStatusSem(int semid){
-
-        int i = 0;
-        int val;
-        for(i; i < W*H; i++){
-            val = semctl(semid, i, GETVAL);
-            printf("\nDEBUG: Semaforo %d\tValore:%d\n", i, val);
-        }
-    }
-    **/
-
-    int main(){
+int main(){
 
 
         char* nTaxi;
@@ -66,9 +41,7 @@
         sigaction(SIGINT, &sa, NULL);
         sigaction(SIGALRM, &sa, NULL);
         sigaction(SIGTERM, &sa, NULL);
-/**
- *      sigaction(SIGTERM, &sa, NULL);
-**/
+
         /** OUTPUT **/
         outshmid = shmget(OUTPUT_KEY, sizeof(out), IPC_CREAT | 0666);
         outsemid = semget(OUTPUT_KEY, 1, IPC_CREAT | 0666);
@@ -139,12 +112,9 @@
             exit(EXIT_FAILURE);
 
         }else if(figli[1] == 0){
-            /**printf("\nPartorito Source: %d\n", getpid());**/
             execvp(sCh[0], sCh);
         }
-    /**
-        semctl(semidapp, 0, SETVAL, 0);
-    **/
+
         shmdt(shmAt);
         free(timeout);
         free(nTaxi);

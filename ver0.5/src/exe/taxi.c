@@ -10,9 +10,6 @@ void muoriPlease(int signum, siginfo_t* info, void* context){
         shmdt(output);
         exit(EXIT_SUCCESS);
     }else if(signum == SIGALRM){
-        /**
-	kill(richiesta, SIGUSR2);
-        printf("\nDEBUG: SEGNALE: %d\tInterrotto TAXI: %d per blocco su semaforo o arrivato signalAlarm\n", signum, getpid());**/
 	int msgidOut = msgget(MKEY_OUT, 0666);
 	mexSig messaggioSegnale;
 	messaggioSegnale.mtype = (long)richiesta;
@@ -78,14 +75,13 @@ int main(int argc, char* argv[]){
     myop.sem_flg = 0;
 
     myop.sem_op = -1;
-/**    semop(semid, &myop, 1);**/
+
 
     while(!fals){
         i = randomizeNum(shift, H);
         j = randomizeNum(shift+2, W);
         tmp = checkOne(i,j);
-       /** printf("\nDEBUG: I: %d\tj: %d\n", i, j);
-        printf("\nDEBUG: TMP: %d\n", tmp);**/
+
         if(tmp == 1){
             head[i][j].soCap += 1;
             head[i][j].count += 1;
@@ -94,21 +90,6 @@ int main(int argc, char* argv[]){
     }
 
     shmdt(head);
-
-/**    printf("\n\n### Taxi %d BEFORE ###", getpid());
-    printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
-            i,
-            j,
-            head[i][j].one,
-            head[i][j].soCap,
-            head[i][j].soTime,
-            head[i][j].count);
-
-    fflush(stdout);
-
-    myop.sem_op = 1;
-    semop(semid, &myop, 1);
-**/
     semop(semidapp, &myopapp, 1);
 
     alarm(dur);
@@ -121,27 +102,12 @@ int main(int argc, char* argv[]){
 
         myopMsg.sem_op = 1;
         semop(semidMsg, &myopMsg, 1);
-
-        /**
-        printf("\nDEBUG: Richiesta presa in incarico\tpi: %d\tpy: %d\ti: %d\tj: %d\tx: %d\ty: %d\tPidRichiesta: %d\n",
-                i,
-                j,
-                ricezione.arrivi[0],
-                ricezione.arrivi[1],
-                ricezione.arrivi[2],
-                ricezione.arrivi[3],
-                (int)ricezione.pidRic);
-        fflush(stdout);
-**/
         richiesta = ricezione.pidRic;
 
         gettimeofday(&timeBefore, NULL);
 
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[0], ricezione.arrivi[1]);
         movimentoManhattanSEC(&i, &j, ricezione.arrivi[2], ricezione.arrivi[3]);
-/**
-        kill(richiesta, SIGPIPE);
-**/
 	messaggioSegnale.mtype = (long)richiesta;
 	messaggioSegnale.segnale = 70;
 
@@ -173,22 +139,7 @@ int main(int argc, char* argv[]){
         shmdt(output);
 
         myop.sem_op = -1;
-/**        semop(semid, &myop, 1);
 
-        printf("\n\n### Taxi %d AFTER ###", getpid());
-        printf("\nIndex i: %d\nIndex j:%d\nOccupata: %d\nCapacità: %d\nAttraversamento: %d\nContatore: %d\n\n",
-                i,
-                j,
-                head[i][j].one,
-                head[i][j].soCap,
-                head[i][j].soTime,
-                head[i][j].count);
-
-        fflush(stdout);
-
-        myop.sem_op = 1;
-        semop(semid, &myop, 1);
-**/
     }
 
    return 0;
